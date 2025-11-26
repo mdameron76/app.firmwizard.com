@@ -31,8 +31,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('firms/{firm}/metrics/timeseries', [MetricsController::class, 'timeseries']);
     
     // AI Jobs
+    Route::get('firms/{firm}/ai-jobs', [AiJobController::class, 'index']);
     Route::post('firms/{firm}/ai-jobs', [AiJobController::class, 'store']);
     Route::get('firms/{firm}/ai-jobs/{aiJob}', [AiJobController::class, 'show']);
+    Route::patch('firms/{firm}/ai-jobs/{aiJob}', [AiJobController::class, 'update']);
+    Route::delete('firms/{firm}/ai-jobs/{aiJob}', [AiJobController::class, 'destroy']);
 });
 
 // N8N Webhook routes (no auth - will use API key validation)
