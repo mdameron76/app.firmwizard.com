@@ -28,9 +28,11 @@
                             <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-900 text-green-200">
                                 ✓ Completed
                             </span>
-                            <span class="text-gray-400 text-sm">
-                                Finished: {{ $job->completed_at->format('M d, Y \a\t H:i') }}
-                            </span>
+                            @if($job->completed_at)
+                                <span class="text-gray-400 text-sm">
+                                    Finished: {{ $job->completed_at->format('M d, Y \a\t H:i') }}
+                                </span>
+                            @endif
                         @elseif($job->status === 'running')
                             <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-900 text-blue-200">
                                 ⟳ Running
@@ -60,15 +62,21 @@
                                 <h2 class="text-2xl font-semibold text-white mb-4">Recommended Blog Topics</h2>
                                 @foreach($output['topics'] ?? [] as $topic)
                                     <div class="bg-fw-dark border border-gray-700 rounded-lg p-6">
-                                        <h3 class="text-xl font-semibold text-fw-accent mb-2">{{ $topic['title'] }}</h3>
-                                        <p class="text-gray-300 mb-3">{{ $topic['description'] }}</p>
+                                        <h3 class="text-xl font-semibold text-fw-accent mb-2">{{ $topic['title'] ?? 'Untitled' }}</h3>
+                                        @if(isset($topic['description']))
+                                            <p class="text-gray-300 mb-3">{{ $topic['description'] }}</p>
+                                        @endif
                                         <div class="flex items-center space-x-4 text-sm">
-                                            <span class="text-gray-400">SEO Score: 
-                                                <span class="text-fw-gold font-semibold">{{ $topic['seo_score'] }}/10</span>
-                                            </span>
-                                            <span class="text-gray-400">Keywords: 
-                                                <span class="text-white">{{ implode(', ', $topic['keywords']) }}</span>
-                                            </span>
+                                            @if(isset($topic['seo_score']))
+                                                <span class="text-gray-400">SEO Score: 
+                                                    <span class="text-fw-gold font-semibold">{{ $topic['seo_score'] }}/10</span>
+                                                </span>
+                                            @endif
+                                            @if(isset($topic['keywords']) && is_array($topic['keywords']))
+                                                <span class="text-gray-400">Keywords: 
+                                                    <span class="text-white">{{ implode(', ', $topic['keywords']) }}</span>
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach
@@ -79,51 +87,101 @@
                             <div class="space-y-6">
                                 <h2 class="text-2xl font-semibold text-white mb-4">Competitor Analysis</h2>
                                 
-                                @foreach($output['competitors'] ?? [] as $competitor)
-                                    <div class="bg-fw-dark border border-gray-700 rounded-lg p-6">
-                                        <div class="flex items-start justify-between mb-4">
-                                            <div>
-                                                <h3 class="text-xl font-semibold text-white">{{ $competitor['name'] }}</h3>
-                                                <a href="{{ $competitor['website'] }}" target="_blank" 
-                                                   class="text-fw-accent hover:underline text-sm">
-                                                    {{ $competitor['website'] }} ↗
-                                                </a>
+                                <!-- Competitor Overview -->
+                                @if(isset($output['competitor_overview']))
+                                    <div class="mb-8">
+                                        <h3 class="text-xl font-semibold text-fw-accent mb-4">Competitor Overview</h3>
+                                        @foreach($output['competitor_overview'] as $competitor)
+                                            <div class="bg-fw-dark border border-gray-700 rounded-lg p-6 mb-4">
+                                                <div class="flex items-start justify-between mb-4">
+                                                    <div>
+                                                        <h4 class="text-lg font-semibold text-white">{{ $competitor['name'] ?? 'Unknown Competitor' }}</h4>
+                                                        <p class="text-gray-400 text-sm">
+                                                            {{ $competitor['city'] ?? '' }} • {{ $competitor['primary_practice'] ?? '' }}
+                                                        </p>
+                                                    </div>
+                                                    @if(isset($competitor['visibility_score']))
+                                                        <div class="text-right">
+                                                            <div class="text-2xl font-bold text-fw-gold">{{ $competitor['visibility_score'] }}/100</div>
+                                                            <div class="text-xs text-gray-400">Visibility Score</div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    @if(isset($competitor['strengths']))
+                                                        <div>
+                                                            <h5 class="text-sm font-semibold text-gray-400 mb-2">Strengths</h5>
+                                                            <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                                                                @foreach($competitor['strengths'] as $strength)
+                                                                    <li>{{ $strength }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                    @endif
+                                                    @if(isset($competitor['weaknesses']))
+                                                        <div>
+                                                            <h5 class="text-sm font-semibold text-gray-400 mb-2">Weaknesses</h5>
+                                                            <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                                                                @foreach($competitor['weaknesses'] as $weakness)
+                                                                    <li>{{ $weakness }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <div class="text-right">
-                                                <div class="text-2xl font-bold text-fw-gold">{{ $competitor['strength_score'] }}/10</div>
-                                                <div class="text-xs text-gray-400">Strength Score</div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                
+                                <!-- Opportunities -->
+                                @if(isset($output['opportunities']))
+                                    <div class="mb-8">
+                                        <h3 class="text-xl font-semibold text-fw-accent mb-4">Growth Opportunities</h3>
+                                        @foreach($output['opportunities'] as $opportunity)
+                                            <div class="bg-fw-dark border border-gray-700 rounded-lg p-6 mb-4">
+                                                <div class="flex items-start gap-4">
+                                                    @if(isset($opportunity['priority']))
+                                                        <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                                            {{ $opportunity['priority'] === 'high' ? 'bg-red-900 text-red-200' : '' }}
+                                                            {{ $opportunity['priority'] === 'medium' ? 'bg-yellow-900 text-yellow-200' : '' }}
+                                                            {{ $opportunity['priority'] === 'low' ? 'bg-blue-900 text-blue-200' : '' }}">
+                                                            {{ strtoupper($opportunity['priority']) }}
+                                                        </span>
+                                                    @endif
+                                                    <div class="flex-1">
+                                                        <h4 class="text-lg font-semibold text-white mb-2">{{ $opportunity['description'] ?? '' }}</h4>
+                                                        @if(isset($opportunity['why_it_matters']))
+                                                            <p class="text-gray-400 text-sm mb-2">
+                                                                <span class="font-semibold">Why it matters:</span> {{ $opportunity['why_it_matters'] }}
+                                                            </p>
+                                                        @endif
+                                                        @if(isset($opportunity['first_step']))
+                                                            <p class="text-fw-gold text-sm">
+                                                                <span class="font-semibold">First step:</span> {{ $opportunity['first_step'] }}
+                                                            </p>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                            <div>
-                                                <h4 class="text-sm font-semibold text-gray-400 mb-2">Strengths</h4>
-                                                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                                                    @foreach($competitor['strengths'] ?? [] as $strength)
-                                                        <li>{{ $strength }}</li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                            <div>
-                                                <h4 class="text-sm font-semibold text-gray-400 mb-2">Weaknesses</h4>
-                                                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                                                    @foreach($competitor['weaknesses'] ?? [] as $weakness)
-                                                        <li>{{ $weakness }}</li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="border-t border-gray-700 pt-4">
-                                            <h4 class="text-sm font-semibold text-fw-accent mb-2">Opportunities for Your Firm</h4>
-                                            <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                                                @foreach($competitor['opportunities'] ?? [] as $opportunity)
-                                                    <li>{{ $opportunity }}</li>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                
+                                <!-- Gaps -->
+                                @if(isset($output['gaps']) && count($output['gaps']) > 0)
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-fw-accent mb-4">Identified Gaps</h3>
+                                        <div class="bg-fw-dark border border-gray-700 rounded-lg p-6">
+                                            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                                                @foreach($output['gaps'] as $gap)
+                                                    <li>{{ $gap }}</li>
                                                 @endforeach
                                             </ul>
                                         </div>
                                     </div>
-                                @endforeach
+                                @endif
                             </div>
 
                         @elseif($job->job_type === 'website_analysis')

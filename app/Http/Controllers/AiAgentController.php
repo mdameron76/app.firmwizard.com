@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 
 class AiAgentController extends Controller
 {
+    /**
+     * Display the AI Agents Hub
+     */
     public function index()
     {
         $user = Auth::user();
@@ -80,6 +83,9 @@ class AiAgentController extends Controller
         return view('ai-agents.index', compact('firm', 'recentJobs', 'availableAgents'));
     }
 
+    /**
+     * Trigger an AI agent job
+     */
     public function trigger(Request $request, $agentType)
     {
         $user = Auth::user();
@@ -111,6 +117,9 @@ class AiAgentController extends Controller
         return redirect()->route('ai-agents.index')->with('success', 'AI agent job has been queued!');
     }
 
+    /**
+     * Show AI job results
+     */
     public function show(AiJob $job)
     {
         $user = Auth::user();

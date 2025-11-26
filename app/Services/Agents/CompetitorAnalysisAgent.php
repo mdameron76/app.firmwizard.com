@@ -3,6 +3,7 @@
 namespace App\Services\Agents;
 
 use OpenAI;
+use GuzzleHttp\Client as GuzzleClient;
 
 class CompetitorAnalysisAgent
 {
@@ -10,7 +11,10 @@ class CompetitorAnalysisAgent
 
     public function __construct()
     {
-        $this->client = OpenAI::client(config('services.openai.api_key'));
+        $this->client = OpenAI::factory()
+            ->withApiKey(config('services.openai.api_key'))
+            ->withHttpClient(new GuzzleClient(['verify' => false]))
+            ->make();
     }
 
     /**

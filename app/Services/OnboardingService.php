@@ -82,7 +82,10 @@ class OnboardingService
     /**
      * Finalize onboarding and create AI firm profile
      */
-    protected function finalizeOnboarding(FirmOnboardingSession $session): void
+    /**
+     * Finalize onboarding and create AI profile
+     */
+    public function finalizeOnboarding(FirmOnboardingSession $session): void
     {
         DB::transaction(function () use ($session) {
             $wizardData = $session->wizard_data_json;

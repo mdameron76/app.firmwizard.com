@@ -1,0 +1,757 @@
+-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Server version:               8.0.43 - MySQL Community Server - GPL
+-- Server OS:                    Win64
+-- HeidiSQL Version:             12.11.0.7065
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+-- Dumping database structure for lawsoftware_collector
+CREATE DATABASE IF NOT EXISTS `lawsoftware_collector` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `lawsoftware_collector`;
+
+-- Dumping structure for table lawsoftware_collector.api_usage
+CREATE TABLE IF NOT EXISTS `api_usage` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `vendor` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `api_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `collection_run_id` int DEFAULT NULL,
+  `units` int DEFAULT '1',
+  `cost_cents` int DEFAULT '0',
+  `called_at` datetime NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_collection_run_id` (`collection_run_id`),
+  KEY `idx_vendor` (`vendor`),
+  KEY `idx_called_at` (`called_at`),
+  CONSTRAINT `api_usage_ibfk_1` FOREIGN KEY (`collection_run_id`) REFERENCES `collection_runs` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.collections
+CREATE TABLE IF NOT EXISTS `collections` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `firm_id` int DEFAULT NULL,
+  `firm_location_id` int NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `query` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `worker_id` int DEFAULT NULL,
+  `enabled` tinyint(1) DEFAULT '1',
+  `schedule_cron` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_run_at` datetime DEFAULT NULL,
+  `next_run_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_firm_location_id` (`firm_location_id`),
+  KEY `idx_enabled` (`enabled`),
+  KEY `idx_next_run_at` (`next_run_at`),
+  KEY `worker_id` (`worker_id`),
+  KEY `idx_firm_id` (`firm_id`),
+  CONSTRAINT `collections_ibfk_1` FOREIGN KEY (`firm_location_id`) REFERENCES `firm_locations` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `collections_ibfk_2` FOREIGN KEY (`worker_id`) REFERENCES `workers` (`id`),
+  CONSTRAINT `collections_ibfk_3` FOREIGN KEY (`firm_id`) REFERENCES `firms` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.collection_runs
+CREATE TABLE IF NOT EXISTS `collection_runs` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `collection_id` int NOT NULL,
+  `started_at` datetime NOT NULL,
+  `finished_at` datetime DEFAULT NULL,
+  `status` enum('pending','running','success','warning','error') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `error_message` text COLLATE utf8mb4_unicode_ci,
+  `items_processed` int DEFAULT '0' COMMENT 'Generic count: competitors, leads, pages, etc.',
+  `api_calls` int DEFAULT '0',
+  `api_cost_estimate_cents` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_collection_id` (`collection_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_started_at` (`started_at`),
+  CONSTRAINT `collection_runs_ibfk_1` FOREIGN KEY (`collection_id`) REFERENCES `collections` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.competitors
+CREATE TABLE IF NOT EXISTS `competitors` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `firm_id` int NOT NULL,
+  `firm_location_id` int NOT NULL,
+  `collection_id` int DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `website` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `facebook_page_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `place_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `blocked_at` datetime DEFAULT NULL,
+  `block_reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `facebook_last_scraped` datetime DEFAULT NULL,
+  `facebook_ads_count` int DEFAULT '0',
+  `facebook_scrape_status` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `active` tinyint(1) DEFAULT '1',
+  `gbp_location_count` int DEFAULT '0' COMMENT 'Number of GBP locations found',
+  `gbp_last_scraped` datetime DEFAULT NULL COMMENT 'Last time GBP data was collected',
+  `gbp_scrape_status` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Status of last GBP scrape',
+  `gbp_account_name` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'GBP account resource name if found',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_firm_location_website` (`firm_location_id`,`website`),
+  UNIQUE KEY `unique_firm_location_place` (`firm_location_id`,`place_id`),
+  KEY `idx_place_id` (`place_id`),
+  KEY `idx_firm_id` (`firm_id`),
+  KEY `idx_firm_location_id` (`firm_location_id`),
+  CONSTRAINT `fk_competitors_firm` FOREIGN KEY (`firm_id`) REFERENCES `firms` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_competitors_firm_location` FOREIGN KEY (`firm_location_id`) REFERENCES `firm_locations` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.competitor_collections
+CREATE TABLE IF NOT EXISTS `competitor_collections` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `competitor_id` int NOT NULL,
+  `collection_id` int NOT NULL,
+  `found_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_competitor_collection` (`competitor_id`,`collection_id`),
+  KEY `idx_competitor_id` (`competitor_id`),
+  KEY `idx_collection_id` (`collection_id`),
+  CONSTRAINT `competitor_collections_ibfk_1` FOREIGN KEY (`competitor_id`) REFERENCES `competitors` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `competitor_collections_ibfk_2` FOREIGN KEY (`collection_id`) REFERENCES `collections` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.competitor_gbp_locations
+CREATE TABLE IF NOT EXISTS `competitor_gbp_locations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `competitor_id` int NOT NULL,
+  `location_name` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Full resource name from GBP API',
+  `place_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Google Place ID',
+  `store_code` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Store code if applicable',
+  `business_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `language_code` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'en',
+  `title` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Short business description',
+  `description` text COLLATE utf8mb4_unicode_ci COMMENT 'Full business description',
+  `address_line1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address_line2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `locality` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'City',
+  `administrative_area` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'State/Province',
+  `postal_code` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `country` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Country code',
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `primary_category` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `additional_categories` json DEFAULT NULL COMMENT 'Array of category names',
+  `phone_number` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `website_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `service_areas` json DEFAULT NULL COMMENT 'Array of place IDs or region names',
+  `attributes` json DEFAULT NULL COMMENT 'e.g., women-led, veteran-owned, free_consultation',
+  `regular_hours` json DEFAULT NULL COMMENT 'Standard weekly hours',
+  `special_hours` json DEFAULT NULL COMMENT 'Holiday/special event hours',
+  `is_verified` tinyint(1) DEFAULT '0',
+  `is_published` tinyint(1) DEFAULT '0',
+  `is_suspended` tinyint(1) DEFAULT '0',
+  `is_duplicate` tinyint(1) DEFAULT '0',
+  `profile_photo_url` text COLLATE utf8mb4_unicode_ci,
+  `cover_photo_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `logo_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `photos_count` int DEFAULT '0',
+  `rating` decimal(2,1) DEFAULT NULL COMMENT 'Average star rating',
+  `review_count` int DEFAULT '0',
+  `total_reviews` int DEFAULT '0',
+  `opening_date` date DEFAULT NULL,
+  `price_level` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'e.g., PRICE_LEVEL_FREE, PRICE_LEVEL_INEXPENSIVE',
+  `completeness_score` int DEFAULT '0',
+  `completeness_details` json DEFAULT NULL,
+  `labels` json DEFAULT NULL COMMENT 'Custom labels',
+  `raw_response` json DEFAULT NULL COMMENT 'Complete API response for future reference',
+  `sync_status` enum('pending','synced','failed') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `synced_at` timestamp NULL DEFAULT NULL,
+  `sync_error` text COLLATE utf8mb4_unicode_ci,
+  `first_seen_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_scraped_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_location_name` (`location_name`),
+  KEY `idx_competitor_id` (`competitor_id`),
+  KEY `idx_place_id` (`place_id`),
+  KEY `idx_business_name` (`business_name`),
+  KEY `idx_location` (`latitude`,`longitude`),
+  KEY `idx_sync_status` (`sync_status`),
+  CONSTRAINT `competitor_gbp_locations_ibfk_1` FOREIGN KEY (`competitor_id`) REFERENCES `competitors` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.competitor_gbp_posts
+CREATE TABLE IF NOT EXISTS `competitor_gbp_posts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `location_id` int NOT NULL,
+  `competitor_id` int NOT NULL,
+  `post_name` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Full resource name from GBP API',
+  `post_type` enum('STANDARD','EVENT','OFFER','ALERT','COVID_19') COLLATE utf8mb4_unicode_ci DEFAULT 'STANDARD',
+  `summary` text COLLATE utf8mb4_unicode_ci COMMENT 'Post text content',
+  `call_to_action_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'e.g., LEARN_MORE, CALL, BOOK, ORDER',
+  `call_to_action_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `media_format` enum('PHOTO','VIDEO') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `media_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `event_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `event_start_date` datetime DEFAULT NULL,
+  `event_end_date` datetime DEFAULT NULL,
+  `offer_coupon_code` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `offer_redeem_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `offer_terms` text COLLATE utf8mb4_unicode_ci,
+  `language_code` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'en',
+  `state` enum('LIVE','PROCESSING','REJECTED') COLLATE utf8mb4_unicode_ci DEFAULT 'LIVE',
+  `create_time` timestamp NULL DEFAULT NULL,
+  `update_time` timestamp NULL DEFAULT NULL,
+  `search_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Link to view post on Google',
+  `raw_response` json DEFAULT NULL,
+  `first_seen_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_scraped_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_post_name` (`post_name`),
+  KEY `idx_location_id` (`location_id`),
+  KEY `idx_competitor_id` (`competitor_id`),
+  KEY `idx_post_type` (`post_type`),
+  KEY `idx_create_time` (`create_time`),
+  CONSTRAINT `competitor_gbp_posts_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `competitor_gbp_locations` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `competitor_gbp_posts_ibfk_2` FOREIGN KEY (`competitor_id`) REFERENCES `competitors` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.competitor_gbp_reviews
+CREATE TABLE IF NOT EXISTS `competitor_gbp_reviews` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `location_id` int NOT NULL,
+  `competitor_id` int NOT NULL,
+  `review_name` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Full resource name from GBP API',
+  `reviewer_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reviewer_profile_photo_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `star_rating` enum('ONE','TWO','THREE','FOUR','FIVE') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment` text COLLATE utf8mb4_unicode_ci,
+  `review_reply` text COLLATE utf8mb4_unicode_ci,
+  `review_reply_time` timestamp NULL DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT NULL,
+  `update_time` timestamp NULL DEFAULT NULL,
+  `raw_response` json DEFAULT NULL,
+  `first_seen_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_scraped_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_review_name` (`review_name`),
+  KEY `idx_location_id` (`location_id`),
+  KEY `idx_competitor_id` (`competitor_id`),
+  KEY `idx_star_rating` (`star_rating`),
+  KEY `idx_create_time` (`create_time`),
+  CONSTRAINT `competitor_gbp_reviews_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `competitor_gbp_locations` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `competitor_gbp_reviews_ibfk_2` FOREIGN KEY (`competitor_id`) REFERENCES `competitors` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=279 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.competitor_meta_ads
+CREATE TABLE IF NOT EXISTS `competitor_meta_ads` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `competitor_id` int NOT NULL,
+  `ad_archive_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Meta Ad Library unique identifier',
+  `page_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Facebook Page ID',
+  `page_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Facebook Page display name',
+  `ad_library_url` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Direct link to ad in Meta Ad Library',
+  `ad_body_text` text COLLATE utf8mb4_unicode_ci COMMENT 'Primary ad text content',
+  `ad_title` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Ad headline/title',
+  `cta_text` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Call-to-action button text',
+  `cta_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'CTA type (LEARN_MORE, GET_IN_TOUCH, etc.)',
+  `link_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Landing page URL',
+  `link_description` text COLLATE utf8mb4_unicode_ci COMMENT 'Link preview description',
+  `display_format` enum('SINGLE_IMAGE','VIDEO','CAROUSEL','DCO','UNKNOWN') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'UNKNOWN',
+  `publisher_platforms` json NOT NULL COMMENT 'Array: ["FACEBOOK", "INSTAGRAM", "MESSENGER", etc.]',
+  `page_categories` json DEFAULT NULL COMMENT 'Facebook page categories',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Is ad currently active',
+  `ad_start_date` datetime DEFAULT NULL COMMENT 'When ad started running',
+  `ad_end_date` datetime DEFAULT NULL COMMENT 'When ad stopped/will stop running',
+  `currency` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `spend_min` decimal(10,2) DEFAULT NULL COMMENT 'Minimum estimated spend',
+  `spend_max` decimal(10,2) DEFAULT NULL COMMENT 'Maximum estimated spend',
+  `impressions_range` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Impressions range text from Meta',
+  `creative_cards` json DEFAULT NULL COMMENT 'Array of card objects with images, videos, etc.',
+  `extra_images` json DEFAULT NULL COMMENT 'Additional images from the ad',
+  `extra_videos` json DEFAULT NULL COMMENT 'Additional videos from the ad',
+  `extra_texts` json DEFAULT NULL COMMENT 'All text variations/elements',
+  `extra_links` json DEFAULT NULL COMMENT 'All links found in the ad',
+  `page_profile_picture_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `page_profile_uri` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Facebook page URL',
+  `page_like_count` int DEFAULT NULL,
+  `page_is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `raw_snapshot` json DEFAULT NULL COMMENT 'Complete snapshot object for future analysis',
+  `collection_status` enum('active','stopped','error') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
+  `collection_notes` text COLLATE utf8mb4_unicode_ci,
+  `first_seen_at` timestamp NULL DEFAULT NULL COMMENT 'When we first detected this ad',
+  `last_seen_active` timestamp NULL DEFAULT NULL COMMENT 'Last time ad was confirmed active',
+  `last_scraped_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `sync_status` enum('pending','synced','failed') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `synced_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_ad_archive_id` (`ad_archive_id`),
+  KEY `idx_competitor_active` (`competitor_id`,`is_active`),
+  KEY `idx_page_id` (`page_id`),
+  KEY `idx_collection_status` (`collection_status`),
+  KEY `idx_sync_status` (`sync_status`),
+  CONSTRAINT `fk_competitor_meta_ads` FOREIGN KEY (`competitor_id`) REFERENCES `competitors` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.competitor_practice_areas
+CREATE TABLE IF NOT EXISTS `competitor_practice_areas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `competitor_id` int NOT NULL,
+  `practice_area` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_competitor_practice` (`competitor_id`,`practice_area`),
+  KEY `idx_competitor_id` (`competitor_id`),
+  KEY `idx_competitor` (`competitor_id`),
+  CONSTRAINT `competitor_practice_areas_ibfk_1` FOREIGN KEY (`competitor_id`) REFERENCES `competitors` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=575 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.crawler_pages
+CREATE TABLE IF NOT EXISTS `crawler_pages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `competitor_id` int NOT NULL,
+  `url` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `url_hash` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content` longtext COLLATE utf8mb4_unicode_ci,
+  `content_hash` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_description` text COLLATE utf8mb4_unicode_ci,
+  `meta_keywords` text COLLATE utf8mb4_unicode_ci,
+  `word_count` int NOT NULL DEFAULT '0',
+  `page_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `status_code` int NOT NULL DEFAULT '200',
+  `crawled_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `synced_at` timestamp NULL DEFAULT NULL,
+  `sync_status` enum('pending','synced','error') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `sync_error` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_competitor_url` (`competitor_id`,`url_hash`),
+  KEY `idx_competitor_id` (`competitor_id`),
+  KEY `idx_url_hash` (`url_hash`),
+  KEY `idx_sync_status` (`sync_status`),
+  KEY `idx_synced_at` (`synced_at`),
+  KEY `idx_competitor_crawled` (`competitor_id`,`crawled_at` DESC),
+  CONSTRAINT `crawler_pages_ibfk_1` FOREIGN KEY (`competitor_id`) REFERENCES `competitors` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2340 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.crawler_page_headings
+CREATE TABLE IF NOT EXISTS `crawler_page_headings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `page_id` int NOT NULL,
+  `level` tinyint unsigned NOT NULL COMMENT '1=H1, 2=H2, 3=H3, etc.',
+  `position` int unsigned NOT NULL,
+  `anchor_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `text` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_page_heading` (`page_id`,`level`,`position`),
+  KEY `idx_page_level` (`page_id`,`level`,`position`),
+  CONSTRAINT `crawler_page_headings_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `crawler_pages` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=27706 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.crawler_page_keywords
+CREATE TABLE IF NOT EXISTS `crawler_page_keywords` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `page_id` int NOT NULL,
+  `ngram_type` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '1=word, 2=bigram, 3=trigram',
+  `keyword` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `frequency` int NOT NULL DEFAULT '0',
+  `density` decimal(6,4) NOT NULL DEFAULT '0.0000',
+  `first_position` int DEFAULT NULL,
+  `first_position_percent` decimal(6,4) DEFAULT NULL,
+  `in_title` tinyint(1) NOT NULL DEFAULT '0',
+  `in_meta_description` tinyint(1) NOT NULL DEFAULT '0',
+  `in_h1` tinyint(1) NOT NULL DEFAULT '0',
+  `in_h2` tinyint(1) NOT NULL DEFAULT '0',
+  `in_url_slug` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_page_keyword` (`page_id`,`keyword`,`ngram_type`),
+  KEY `idx_page_keyword` (`page_id`,`keyword`,`ngram_type`),
+  KEY `idx_keyword` (`keyword`,`ngram_type`),
+  CONSTRAINT `crawler_page_keywords_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `crawler_pages` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=223772 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.crawler_page_links
+CREATE TABLE IF NOT EXISTS `crawler_page_links` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `page_id` int NOT NULL,
+  `href` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `anchor_text` text COLLATE utf8mb4_unicode_ci,
+  `link_type` enum('internal','external') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'internal',
+  `rel` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `target` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `position` int unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_page_link` (`page_id`,`href`(500)),
+  KEY `idx_page` (`page_id`,`link_type`),
+  CONSTRAINT `crawler_page_links_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `crawler_pages` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=58032 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.crawler_page_schemas
+CREATE TABLE IF NOT EXISTS `crawler_page_schemas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `page_id` int NOT NULL,
+  `schema_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `source` enum('json_ld','microdata','rdfa') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'json_ld',
+  `schema_id` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `raw_json` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_page_schema` (`page_id`,`schema_type`,`schema_id`(255)),
+  KEY `idx_page` (`page_id`),
+  KEY `idx_type` (`schema_type`),
+  KEY `idx_page_schema` (`page_id`,`schema_type`),
+  CONSTRAINT `crawler_page_schemas_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `crawler_pages` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2751 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.crawler_page_tracking_pixels
+CREATE TABLE IF NOT EXISTS `crawler_page_tracking_pixels` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `page_id` int NOT NULL,
+  `pixel_type` enum('facebook_pixel','google_analytics','google_tag_manager','google_ads','linkedin_insight','twitter_pixel','tiktok_pixel','other') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pixel_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `found_in` enum('head','body','script') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `raw_snippet` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_page_pixel` (`page_id`,`pixel_type`,`pixel_id`),
+  CONSTRAINT `crawler_page_tracking_pixels_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `crawler_pages` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1434 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.crawler_sync_log
+CREATE TABLE IF NOT EXISTS `crawler_sync_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sync_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'pages, headings, keywords, links, schemas',
+  `records_sent` int NOT NULL DEFAULT '0',
+  `records_success` int NOT NULL DEFAULT '0',
+  `records_failed` int NOT NULL DEFAULT '0',
+  `started_at` timestamp NOT NULL,
+  `finished_at` timestamp NULL DEFAULT NULL,
+  `status` enum('running','success','partial','error') COLLATE utf8mb4_unicode_ci DEFAULT 'running',
+  `error_message` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_sync_type` (`sync_type`),
+  KEY `idx_status` (`status`),
+  KEY `idx_started_at` (`started_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.firms
+CREATE TABLE IF NOT EXISTS `firms` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `external_firm_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `external_firm_id` (`external_firm_id`),
+  KEY `idx_external_firm_id` (`external_firm_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.firm_locations
+CREATE TABLE IF NOT EXISTS `firm_locations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `firm_id` int NOT NULL,
+  `external_location_id` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address_line1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `city` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `state` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `zipcode` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `latitude` decimal(10,7) DEFAULT NULL,
+  `longitude` decimal(10,7) DEFAULT NULL,
+  `radius_meters` int DEFAULT '25000',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_firm_location` (`firm_id`,`city`,`state`,`zipcode`),
+  KEY `idx_firm_id` (`firm_id`),
+  KEY `idx_external_location_id` (`external_location_id`),
+  CONSTRAINT `firm_locations_ibfk_1` FOREIGN KEY (`firm_id`) REFERENCES `firms` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.integrations
+CREATE TABLE IF NOT EXISTS `integrations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `firm_id` int NOT NULL,
+  `integration_type` varchar(50) NOT NULL,
+  `label` varchar(255) DEFAULT NULL,
+  `identifier` varchar(255) DEFAULT NULL,
+  `oauth_token` text,
+  `oauth_refresh_token` text,
+  `oauth_expires_at` datetime DEFAULT NULL,
+  `api_key` text,
+  `api_secret` text,
+  `credentials` json DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `last_sync_at` datetime DEFAULT NULL,
+  `last_sync_status` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_integration` (`firm_id`,`integration_type`,`identifier`),
+  KEY `idx_firm` (`firm_id`),
+  KEY `idx_type` (`integration_type`),
+  KEY `idx_active` (`is_active`),
+  CONSTRAINT `integrations_ibfk_1` FOREIGN KEY (`firm_id`) REFERENCES `firms` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.lsa_account_reports
+CREATE TABLE IF NOT EXISTS `lsa_account_reports` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `firm_id` int DEFAULT NULL,
+  `location_id` int DEFAULT NULL,
+  `account_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `business_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `report_date` date NOT NULL,
+  `average_weekly_budget` decimal(10,2) DEFAULT NULL,
+  `current_period_total_cost` decimal(10,2) DEFAULT NULL,
+  `previous_period_total_cost` decimal(10,2) DEFAULT NULL,
+  `currency_code` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT 'USD',
+  `average_five_star_rating` decimal(3,2) DEFAULT NULL,
+  `total_review` int DEFAULT NULL,
+  `current_period_charged_leads` int DEFAULT NULL,
+  `previous_period_charged_leads` int DEFAULT NULL,
+  `phone_lead_responsiveness` decimal(4,3) DEFAULT NULL,
+  `current_period_phone_calls` int DEFAULT NULL,
+  `previous_period_phone_calls` int DEFAULT NULL,
+  `current_period_connected_phone_calls` int DEFAULT NULL,
+  `previous_period_connected_phone_calls` int DEFAULT NULL,
+  `impressions_last_two_days` bigint DEFAULT NULL,
+  `raw_response` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_account_date` (`account_id`,`report_date`),
+  KEY `idx_firm` (`firm_id`),
+  KEY `idx_location` (`location_id`),
+  KEY `idx_account` (`account_id`),
+  KEY `idx_date` (`report_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.lsa_account_settings
+CREATE TABLE IF NOT EXISTS `lsa_account_settings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `firm_id` int NOT NULL,
+  `location_id` int DEFAULT NULL,
+  `account_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `manager_customer_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `business_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `collection_frequency` enum('hourly','daily','weekly') COLLATE utf8mb4_unicode_ci DEFAULT 'daily',
+  `last_collected_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_firm_account` (`firm_id`,`account_id`),
+  KEY `idx_firm` (`firm_id`),
+  KEY `idx_account` (`account_id`),
+  KEY `idx_active` (`is_active`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.lsa_leads
+CREATE TABLE IF NOT EXISTS `lsa_leads` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `firm_id` int DEFAULT NULL,
+  `location_id` int DEFAULT NULL,
+  `account_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lead_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lead_type` enum('phone','message','booking') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lead_status` enum('new','contacted','qualified','converted','lost') COLLATE utf8mb4_unicode_ci DEFAULT 'new',
+  `charge_status` enum('charged','not_charged','disputed','refunded') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `customer_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `customer_phone` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `customer_email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `message_text` text COLLATE utf8mb4_unicode_ci,
+  `service_requested` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lead_created_at` datetime DEFAULT NULL,
+  `lead_responded_at` datetime DEFAULT NULL,
+  `response_time_seconds` int DEFAULT NULL,
+  `lead_price` decimal(10,2) DEFAULT NULL,
+  `currency_code` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT 'USD',
+  `raw_response` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `lead_id` (`lead_id`),
+  KEY `idx_firm` (`firm_id`),
+  KEY `idx_location` (`location_id`),
+  KEY `idx_account` (`account_id`),
+  KEY `idx_lead_type` (`lead_type`),
+  KEY `idx_lead_status` (`lead_status`),
+  KEY `idx_created` (`lead_created_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=255 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.settings
+CREATE TABLE IF NOT EXISTS `settings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `setting_key` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `setting_value` text COLLATE utf8mb4_unicode_ci,
+  `setting_category` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `setting_label` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `setting_description` text COLLATE utf8mb4_unicode_ci,
+  `is_sensitive` tinyint(1) DEFAULT '0',
+  `is_readonly` tinyint(1) DEFAULT '0',
+  `display_order` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`),
+  KEY `idx_category` (`setting_category`),
+  KEY `idx_key` (`setting_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.workers
+CREATE TABLE IF NOT EXISTS `workers` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `display_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `script_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `enabled` tinyint(1) DEFAULT '1',
+  `icon` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'fas fa-cog',
+  `color` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT 'primary',
+  `accepts_collection_id` tinyint(1) DEFAULT '1',
+  `accepts_competitor_id` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `idx_enabled` (`enabled`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.worker_activity
+CREATE TABLE IF NOT EXISTS `worker_activity` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `worker_type` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `worker_action` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `target_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `target_id` int DEFAULT NULL,
+  `status` enum('started','running','completed','failed') COLLATE utf8mb4_unicode_ci DEFAULT 'started',
+  `started_at` datetime NOT NULL,
+  `finished_at` datetime DEFAULT NULL,
+  `duration_seconds` int DEFAULT NULL,
+  `items_processed` int DEFAULT '0',
+  `error_message` text COLLATE utf8mb4_unicode_ci,
+  `metadata` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_worker_type` (`worker_type`),
+  KEY `idx_status` (`status`),
+  KEY `idx_started_at` (`started_at`),
+  KEY `idx_target` (`target_type`,`target_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.workflows
+CREATE TABLE IF NOT EXISTS `workflows` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `workflow_json` json NOT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `schedule_cron` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Cron expression for scheduled execution',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_executed_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_active` (`is_active`),
+  KEY `idx_last_executed` (`last_executed_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table lawsoftware_collector.workflow_executions
+CREATE TABLE IF NOT EXISTS `workflow_executions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `workflow_id` int NOT NULL,
+  `status` enum('pending','running','completed','failed','cancelled') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `current_step` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `total_steps` int DEFAULT '0',
+  `completed_steps` int DEFAULT '0',
+  `execution_results` json DEFAULT NULL,
+  `started_at` timestamp NULL DEFAULT NULL,
+  `completed_at` timestamp NULL DEFAULT NULL,
+  `duration_seconds` int DEFAULT NULL,
+  `error_message` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_workflow_status` (`workflow_id`,`status`),
+  KEY `idx_started_at` (`started_at`),
+  CONSTRAINT `workflow_executions_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;

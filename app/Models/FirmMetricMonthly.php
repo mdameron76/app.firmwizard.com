@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FirmMetricMonthly extends Model
 {
+    protected $table = 'firm_metrics_monthly';
+    
     public $timestamps = false;
 
     protected $fillable = [

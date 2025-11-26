@@ -1,0 +1,472 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "FirmWizard API",
+        "description": "AI-powered marketing platform for law firms",
+        "contact": {
+            "email": "support@firmwizard.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Local Development Server"
+        }
+    ],
+    "paths": {
+        "/api/ai-agents": {
+            "get": {
+                "tags": [
+                    "AI Agents"
+                ],
+                "summary": "Get available AI agents",
+                "operationId": "afb503bbf1ee5f5e7f555b0e6d089aa9",
+                "responses": {
+                    "200": {
+                        "description": "List of available AI agents"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/ai-agents/trigger/{agentType}": {
+            "post": {
+                "tags": [
+                    "AI Agents"
+                ],
+                "summary": "Trigger an AI agent",
+                "operationId": "6ef154775d6cab3e83a8a46aa9d25aa6",
+                "parameters": [
+                    {
+                        "name": "agentType",
+                        "in": "path",
+                        "description": "Type of AI agent to trigger",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "blog_post",
+                                "competitor_analysis",
+                                "website_analysis",
+                                "gbp_analysis",
+                                "google_ads",
+                                "lsa_ads",
+                                "meta_ads",
+                                "backlinks",
+                                "analytics",
+                                "firm_profile"
+                            ]
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "input_data": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Agent triggered successfully"
+                    },
+                    "400": {
+                        "description": "Invalid agent type"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/ai-agents/jobs/{job}": {
+            "get": {
+                "tags": [
+                    "AI Agents"
+                ],
+                "summary": "Get AI job results",
+                "operationId": "eec596cc81637573504b78279d009928",
+                "parameters": [
+                    {
+                        "name": "job",
+                        "in": "path",
+                        "description": "AI Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job details and results"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/crawler/scripts": {
+            "get": {
+                "tags": [
+                    "Crawler"
+                ],
+                "summary": "List available crawler scripts",
+                "operationId": "7ef5358c6a329e7fe4ee29feebb5139c",
+                "responses": {
+                    "200": {
+                        "description": "List of available scripts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "scripts": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/crawler/page": {
+            "post": {
+                "tags": [
+                    "Crawler"
+                ],
+                "summary": "Crawl and store a page for competitor analysis",
+                "operationId": "20703fc1044fd465dae49506099a5d0c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "competitor_id",
+                                    "url"
+                                ],
+                                "properties": {
+                                    "competitor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "example": "https://example.com"
+                                    },
+                                    "save_to_db": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Page crawled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "page_id": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/crawler/pages/{competitorId}": {
+            "get": {
+                "tags": [
+                    "Crawler"
+                ],
+                "summary": "Get crawled pages for a competitor",
+                "operationId": "77680226ca67857e31822fb545a44c5b",
+                "parameters": [
+                    {
+                        "name": "competitorId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of crawled pages"
+                    }
+                }
+            }
+        },
+        "/api/crawler/find-competitors": {
+            "post": {
+                "tags": [
+                    "Crawler"
+                ],
+                "summary": "Find competitors using Google Places API",
+                "operationId": "4745db9af1d3f6f8dce358b6c16c7d88",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "collection_id"
+                                ],
+                                "properties": {
+                                    "collection_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Competitor search completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "run_id": {
+                                            "type": "integer"
+                                        },
+                                        "competitors_found": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/crawler/collections": {
+            "get": {
+                "tags": [
+                    "Crawler"
+                ],
+                "summary": "Get all collections",
+                "operationId": "30bff1bc3dd5ec0ed2cc732d5800581b",
+                "responses": {
+                    "200": {
+                        "description": "List of collections"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Crawler"
+                ],
+                "summary": "Create a new collection",
+                "operationId": "021aae38ba3a1f94abfaab62fafcd550",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "firm_id",
+                                    "firm_location_id",
+                                    "name",
+                                    "query"
+                                ],
+                                "properties": {
+                                    "firm_id": {
+                                        "type": "integer"
+                                    },
+                                    "firm_location_id": {
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "query": {
+                                        "type": "string"
+                                    },
+                                    "enabled": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Collection created"
+                    }
+                }
+            }
+        },
+        "/api/crawler/firms": {
+            "get": {
+                "tags": [
+                    "Crawler"
+                ],
+                "summary": "Get list of firms",
+                "operationId": "c149cb2f1718d2e1c39bbe757b3a3086",
+                "responses": {
+                    "200": {
+                        "description": "List of firms"
+                    }
+                }
+            }
+        },
+        "/api/crawler/firm-locations": {
+            "get": {
+                "tags": [
+                    "Crawler"
+                ],
+                "summary": "Get list of firm locations",
+                "operationId": "4c6ae1950477beabe8ec46289dc56404",
+                "parameters": [
+                    {
+                        "name": "firm_id",
+                        "in": "query",
+                        "description": "Filter by firm ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of firm locations"
+                    }
+                }
+            }
+        },
+        "/api/crawler/firm-profiles": {
+            "get": {
+                "tags": [
+                    "Crawler"
+                ],
+                "summary": "Get list of firm profiles",
+                "operationId": "5602c500f75ab77c1eefc274d4b6865e",
+                "parameters": [
+                    {
+                        "name": "firm_id",
+                        "in": "query",
+                        "description": "Filter by firm ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of firm profiles"
+                    }
+                }
+            }
+        },
+        "/onboarding": {
+            "get": {
+                "tags": [
+                    "Onboarding"
+                ],
+                "summary": "Get onboarding wizard",
+                "description": "Show onboarding wizard landing/current step",
+                "operationId": "b58cca8420098ad551a5f39ffcdb5e81",
+                "responses": {
+                    "200": {
+                        "description": "Display onboarding wizard"
+                    }
+                }
+            }
+        },
+        "/onboarding/step/{step}": {
+            "get": {
+                "tags": [
+                    "Onboarding"
+                ],
+                "summary": "Get specific wizard step",
+                "description": "Show specific wizard step",
+                "operationId": "1ffa9c8fa025e56616be9e51c4abff6c",
+                "parameters": [
+                    {
+                        "name": "step",
+                        "in": "path",
+                        "description": "Step number (1-5)",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Display wizard step"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "AI Agents",
+            "description": "AI Agents"
+        },
+        {
+            "name": "Crawler",
+            "description": "Crawler"
+        },
+        {
+            "name": "Onboarding",
+            "description": "Onboarding"
+        }
+    ]
+}

@@ -15,6 +15,16 @@ class OnboardingWizardController extends Controller
 
     /**
      * Show onboarding wizard landing/current step
+     * 
+     * @OA\Get(
+     *     path="/onboarding",
+     *     summary="Get onboarding wizard",
+     *     tags={"Onboarding"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Display onboarding wizard"
+     *     )
+     * )
      */
     public function index(Request $request): View
     {
@@ -40,6 +50,23 @@ class OnboardingWizardController extends Controller
 
     /**
      * Show specific wizard step
+     * 
+     * @OA\Get(
+     *     path="/onboarding/step/{step}",
+     *     summary="Get specific wizard step",
+     *     tags={"Onboarding"},
+     *     @OA\Parameter(
+     *         name="step",
+     *         in="path",
+     *         required=true,
+     *         description="Step number (1-5)",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Display wizard step"
+     *     )
+     * )
      */
     public function show(Request $request, int $step): View
     {
@@ -61,6 +88,40 @@ class OnboardingWizardController extends Controller
             'step' => $step,
             'wizardData' => $session->wizard_data_json ?? [],
         ]);
+    }
+
+    /**
+     * Store wizard step data
+     */
+    public function store(Request $request, int $step)
+    {
+        $firm = $this->getCurrentFirm($request);
+        
+        if (!$firm) {
+            return redirect()->route('dashboard')->with('error', 'No firm found.');
+        }
+
+        // Get or create session
+        $session = $this->onboardingService->getCurrentSession($firm);
+        
+        if (!$session) {
+            $session = $this->onboardingService->startOrResumeSession($firm, $request->user());
+        }
+
+        // Save step data
+        $this->onboardingService->saveStep($session, $step, $request->all());
+
+        // Redirect to next step or finalize
+        if ($step < 5) {
+            return redirect()->route('onboarding.step', $step + 1)
+                ->with('success', 'Step ' . $step . ' saved successfully!');
+        }
+
+        // Finalize onboarding
+        $this->onboardingService->finalizeOnboarding($session);
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Onboarding completed! Your AI profile is being generated.');
     }
 
     /**

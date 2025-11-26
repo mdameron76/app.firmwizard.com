@@ -25,17 +25,36 @@
                     <h2 class="text-xl font-semibold text-white mb-6">Available Agents</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($availableAgents as $type => $agent)
+                            @php
+                                $latestJob = $recentJobs->where('job_type', $type)->where('status', 'completed')->first();
+                            @endphp
                             <div class="bg-fw-dark border border-gray-700 rounded-lg p-6 hover:border-fw-accent transition-colors">
                                 <div class="text-4xl mb-3">{{ $agent['icon'] }}</div>
                                 <h3 class="text-lg font-semibold text-white mb-2">{{ $agent['name'] }}</h3>
                                 <p class="text-gray-400 text-sm mb-4">{{ $agent['description'] }}</p>
-                                <form action="{{ route('ai-agents.trigger', $type) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" 
-                                            class="w-full bg-fw-accent hover:bg-fw-accent/80 text-fw-darker font-semibold py-2 px-4 rounded transition-colors">
-                                        Trigger Agent
-                                    </button>
-                                </form>
+                                
+                                @if($latestJob && $latestJob->completed_at)
+                                    <div class="mb-3 text-xs text-fw-accent">
+                                        ✓ Last run: {{ $latestJob->completed_at->diffForHumans() }}
+                                    </div>
+                                @endif
+                                
+                                <div class="flex gap-2">
+                                    <form action="{{ route('ai-agents.trigger', $type) }}" method="POST" class="flex-1">
+                                        @csrf
+                                        <button type="submit" 
+                                                class="w-full bg-fw-accent hover:bg-fw-accent/80 text-fw-darker font-semibold py-2 px-4 rounded transition-colors">
+                                            {{ $latestJob ? 'Run Again' : 'Trigger Agent' }}
+                                        </button>
+                                    </form>
+                                    
+                                    @if($latestJob)
+                                        <a href="{{ route('ai-agents.show', $latestJob) }}" 
+                                           class="bg-fw-gold hover:bg-fw-gold/80 text-fw-darker font-semibold py-2 px-4 rounded transition-colors whitespace-nowrap">
+                                            View Results
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         @endforeach
                     </div>

@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
     // Onboarding Wizard Routes
     Route::get('/onboarding', [OnboardingWizardController::class, 'index'])->name('onboarding.index');
     Route::get('/onboarding/step/{step}', [OnboardingWizardController::class, 'show'])->name('onboarding.step');
+    Route::post('/onboarding/step/{step}', [OnboardingWizardController::class, 'store'])->name('onboarding.step.store');
     
     // AI Agents Routes
     Route::get('/ai-agents', [AiAgentController::class, 'index'])->name('ai-agents.index');

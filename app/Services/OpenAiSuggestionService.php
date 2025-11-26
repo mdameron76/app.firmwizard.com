@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use OpenAI;
+use GuzzleHttp\Client as GuzzleClient;
 
 class OpenAiSuggestionService
 {
@@ -11,7 +12,10 @@ class OpenAiSuggestionService
 
     public function __construct()
     {
-        $this->client = OpenAI::client(config('services.openai.api_key'));
+        $this->client = OpenAI::factory()
+            ->withApiKey(config('services.openai.api_key'))
+            ->withHttpClient(new GuzzleClient(['verify' => false]))
+            ->make();
         
         $this->systemPrompt = "You are an expert legal marketing strategist specializing in family law and small law firms. "
             . "The user is an attorney or law firm staff member filling out a smart onboarding form. "
