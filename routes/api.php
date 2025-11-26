@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AiJobController;
+use App\Http\Controllers\Api\AiSuggestionController;
 use App\Http\Controllers\Api\FirmController;
 use App\Http\Controllers\Api\FirmProfileController;
 use App\Http\Controllers\Api\MetricsController;
@@ -25,6 +26,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('firms/{firm}/onboarding/start', [OnboardingController::class, 'start']);
     Route::get('firms/{firm}/onboarding/current', [OnboardingController::class, 'current']);
     Route::post('firms/{firm}/onboarding/step/{step}', [OnboardingController::class, 'saveStep']);
+    
+    // AI Suggestions for Wizard
+    Route::post('firms/{firm}/ai-suggestions/brand-voice', [AiSuggestionController::class, 'brandVoice']);
+    Route::post('firms/{firm}/ai-suggestions/pain-points', [AiSuggestionController::class, 'painPoints']);
+    Route::post('firms/{firm}/ai-suggestions/psychographics', [AiSuggestionController::class, 'psychographics']);
+    Route::post('firms/{firm}/ai-suggestions/situational-triggers', [AiSuggestionController::class, 'situationalTriggers']);
+    Route::post('firms/{firm}/ai-suggestions/marketing-goals', [AiSuggestionController::class, 'marketingGoals']);
+    Route::post('firms/{firm}/ai-suggestions/lead-estimate', [AiSuggestionController::class, 'leadEstimate']);
     
     // Metrics
     Route::get('firms/{firm}/metrics/summary', [MetricsController::class, 'summary']);
