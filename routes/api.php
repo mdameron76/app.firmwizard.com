@@ -6,11 +6,15 @@ use App\Http\Controllers\Api\AiSuggestionController;
 use App\Http\Controllers\Api\CrawlerController;
 use App\Http\Controllers\Api\FirmController;
 use App\Http\Controllers\Api\FirmProfileController;
+use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\MetricsController;
 use App\Http\Controllers\Api\N8nWebhookController;
 use App\Http\Controllers\Api\OnboardingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// Public health check endpoint (no authentication required)
+Route::get('/health', [HealthController::class, 'check']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
