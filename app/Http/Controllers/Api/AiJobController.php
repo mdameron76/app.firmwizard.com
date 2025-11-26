@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessAiJob;
 use App\Models\AiJob;
 use App\Models\Firm;
 use Illuminate\Http\JsonResponse;
@@ -42,7 +43,8 @@ class AiJobController extends Controller
             'status' => 'pending',
         ]);
 
-        // TODO: Dispatch job to queue for processing
+        // Dispatch job to queue for processing
+        ProcessAiJob::dispatch($job);
 
         return response()->json([
             'success' => true,

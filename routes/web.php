@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiAgentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OnboardingWizardController;
 use App\Http\Controllers\ProfileController;
@@ -17,6 +18,11 @@ Route::middleware('auth')->group(function () {
     // Onboarding Wizard Routes
     Route::get('/onboarding', [OnboardingWizardController::class, 'index'])->name('onboarding.index');
     Route::get('/onboarding/step/{step}', [OnboardingWizardController::class, 'show'])->name('onboarding.step');
+    
+    // AI Agents Routes
+    Route::get('/ai-agents', [AiAgentController::class, 'index'])->name('ai-agents.index');
+    Route::post('/ai-agents/{agentType}/trigger', [AiAgentController::class, 'trigger'])->name('ai-agents.trigger');
+    Route::get('/ai-agents/jobs/{job}', [AiAgentController::class, 'show'])->name('ai-agents.show');
     
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

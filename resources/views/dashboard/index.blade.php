@@ -72,25 +72,38 @@
             </div>
 
             <!-- AI Agents Hub -->
-            <div class="bg-fw-darker rounded-lg shadow-lg p-6">
-                <h3 class="text-xl font-semibold text-white mb-6">AI Agents</h3>
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    @foreach (['blog_post' => 'Blog Posts', 'competitor_analysis' => 'Competitors', 'website_analysis' => 'Website', 'gbp_analysis' => 'Google Business', 'google_ads' => 'Google Ads'] as $type => $label)
-                        <div class="bg-fw-dark rounded-lg p-4 hover:bg-opacity-80 transition cursor-pointer">
-                            <div class="text-center">
-                                <div class="text-2xl mb-2">{{ ['blog_post' => '📝', 'competitor_analysis' => '🔍', 'website_analysis' => '🌐', 'gbp_analysis' => '📍', 'google_ads' => '💰'][$type] }}</div>
-                                <div class="text-sm font-medium text-white">{{ $label }}</div>
-                                @php
-                                    $jobCount = $recentJobs->where('job_type', $type)->count();
-                                @endphp
-                                @if ($jobCount > 0)
-                                    <div class="text-xs text-fw-accent mt-1">{{ $jobCount }} job(s)</div>
-                                @else
-                                    <div class="text-xs text-gray-500 mt-1">Ready</div>
-                                @endif
+            <div class="bg-fw-darker rounded-lg shadow-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-white">AI Agents Hub</h3>
+                    <a href="{{ route('ai-agents.index') }}" class="text-fw-accent hover:text-fw-accent/80 text-sm font-medium">
+                        View All →
+                    </a>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        @foreach (['blog_post' => 'Blog Posts', 'competitor_analysis' => 'Competitors', 'website_analysis' => 'Website', 'gbp_analysis' => 'Google Business', 'google_ads' => 'Google Ads'] as $type => $label)
+                            <div class="bg-fw-dark rounded-lg p-4 hover:bg-opacity-80 transition cursor-pointer">
+                                <div class="text-center">
+                                    <div class="text-2xl mb-2">{{ ['blog_post' => '📝', 'competitor_analysis' => '🔍', 'website_analysis' => '🌐', 'gbp_analysis' => '📍', 'google_ads' => '💰'][$type] }}</div>
+                                    <div class="text-sm font-medium text-white">{{ $label }}</div>
+                                    @php
+                                        $jobCount = $recentJobs->where('job_type', $type)->count();
+                                    @endphp
+                                    @if ($jobCount > 0)
+                                        <div class="text-xs text-fw-accent mt-1">{{ $jobCount }} job(s)</div>
+                                    @else
+                                        <div class="text-xs text-gray-500 mt-1">Ready</div>
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
+                    <div class="mt-6 text-center">
+                        <a href="{{ route('ai-agents.index') }}" 
+                           class="inline-block bg-fw-accent hover:bg-fw-accent/80 text-fw-darker font-semibold py-2 px-6 rounded transition-colors">
+                            Launch AI Agents Hub
+                        </a>
+                    </div>
                 </div>
             </div>
 
