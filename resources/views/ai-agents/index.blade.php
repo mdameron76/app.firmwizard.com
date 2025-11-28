@@ -1,21 +1,22 @@
-<x-app-layout>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-fw-darker rounded-lg shadow-xl overflow-hidden">
-                <!-- Header -->
-                <div class="px-8 py-6 border-b border-gray-700">
-                    <h1 class="text-3xl font-bold text-white">AI Agents Hub</h1>
-                    <p class="mt-2 text-gray-400">Trigger AI-powered insights and recommendations for your firm</p>
+@extends('layouts.app-sidebar')
+
+@section('content')
+    <div class="space-y-6">
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+            <!-- Header -->
+            <div class="px-8 py-6 border-b border-gray-200">
+                <h1 class="text-3xl font-bold text-gray-900">AI Agents Hub</h1>
+                <p class="mt-2 text-gray-600">Trigger AI-powered insights and recommendations for your firm</p>
+            </div>
+
+            @if(session('success'))
+                <div class="mx-8 mt-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded">
+                    {{ session('success') }}
                 </div>
+            @endif
 
-                @if(session('success'))
-                    <div class="mx-8 mt-6 bg-green-900 border border-green-700 text-green-200 px-4 py-3 rounded">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="mx-8 mt-6 bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded">
+            @if(session('error'))
+                <div class="mx-8 mt-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded">
                         {{ session('error') }}
                     </div>
                 @endif
@@ -131,4 +132,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

@@ -1,23 +1,24 @@
-<x-app-layout>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-fw-darker rounded-lg shadow-xl overflow-hidden">
-                <!-- Header -->
-                <div class="px-8 py-6 border-b border-gray-700">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-3xl font-bold text-white">
-                                {{ ucwords(str_replace('_', ' ', $job->job_type)) }} Results
-                            </h1>
-                            <p class="mt-2 text-gray-400">
-                                Started: {{ $job->started_at ? $job->started_at->format('M d, Y \a\t H:i') : 'Not started' }}
-                            </p>
-                        </div>
-                        <a href="{{ route('ai-agents.index') }}" 
-                           class="bg-fw-dark hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded transition-colors">
-                            ← Back to AI Agents
-                        </a>
+@extends('layouts.app-sidebar')
+
+@section('content')
+    <div class="space-y-6">
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+            <!-- Header -->
+            <div class="px-8 py-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">
+                            {{ ucwords(str_replace('_', ' ', $job->job_type)) }} Results
+                        </h1>
+                        <p class="mt-2 text-gray-600">
+                            Started: {{ $job->started_at ? $job->started_at->format('M d, Y \a\t H:i') : 'Not started' }}
+                        </p>
                     </div>
+                    <a href="{{ route('ai-agents.index') }}" 
+                       class="bg-fw-dark hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded transition-colors">
+                        ← Back to AI Agents
+                    </a>
+                </div>
                 </div>
 
                 <!-- Status Badge -->
@@ -268,4 +269,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

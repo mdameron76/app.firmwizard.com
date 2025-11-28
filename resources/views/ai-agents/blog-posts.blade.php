@@ -1,10 +1,6 @@
-<x-app-sidebar>
-    <x-slot name="header">
-        <h2 class="text-2xl font-bold text-gray-900">
-            📝 Blog Posts
-        </h2>
-    </x-slot>
+@extends('layouts.app-sidebar')
 
+@section('content')
     <div class="space-y-6">
         <!-- Coming Soon Banner -->
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
@@ -58,4 +54,4 @@
             </p>
         </div>
     </div>
-</x-app-sidebar>
+@endsection
