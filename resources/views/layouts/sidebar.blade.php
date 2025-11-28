@@ -1,21 +1,21 @@
 <aside 
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" 
-    class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out lg:translate-x-0"
+    class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-fw-dark border-r border-gray-800 transition-transform duration-300 ease-in-out lg:translate-x-0"
 >
     <div class="flex flex-col h-full">
         <!-- Logo -->
-        <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-gray-800">
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
-                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span class="text-white font-bold text-lg">FW</span>
+                <div class="w-8 h-8 bg-gradient-to-br from-fw-accent to-fw-gold rounded-lg flex items-center justify-center">
+                    <span class="text-fw-darker font-bold text-lg">FW</span>
                 </div>
-                <span class="font-bold text-xl text-gray-900">FirmWizard</span>
+                <span class="font-bold text-xl text-white">FirmWizard</span>
             </a>
             
             <!-- Close button (mobile) -->
             <button 
                 @click="sidebarOpen = false" 
-                class="lg:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100"
+                class="lg:hidden p-2 rounded-md text-gray-400 hover:bg-fw-darker"
             >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -40,7 +40,7 @@
             <div class="space-y-1">
                 <button 
                     @click="aiAgentsOpen = !aiAgentsOpen"
-                    class="flex items-center justify-between w-full px-3 py-2.5 rounded-lg transition-colors {{ request()->routeIs('ai-agents.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50' }}"
+                    class="flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('ai-agents.*') ? 'bg-fw-accent text-fw-dark font-semibold' : 'text-gray-300 hover:bg-fw-darker' }}"
                 >
                     <div class="flex items-center space-x-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,55 +70,55 @@
                 >
                     <a 
                         href="{{ route('ai-agents.blog-posts') }}" 
-                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.blog-posts') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }}"
+                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.blog-posts') ? 'text-fw-accent bg-fw-darker' : 'text-gray-400 hover:bg-fw-darker' }}"
                     >
                         📝 Blog Posts
                     </a>
                     <a 
                         href="{{ route('ai-agents.competitor-analysis') }}" 
-                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.competitor-analysis') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }}"
+                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.competitor-analysis') ? 'text-fw-accent bg-fw-darker' : 'text-gray-400 hover:bg-fw-darker' }}"
                     >
                         🔍 Competitor Analysis
                     </a>
                     <a 
                         href="{{ route('ai-agents.website-analysis') }}" 
-                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.website-analysis') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }}"
+                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.website-analysis') ? 'text-fw-accent bg-fw-darker' : 'text-gray-400 hover:bg-fw-darker' }}"
                     >
                         🌐 Website Analysis
                     </a>
                     <a 
                         href="{{ route('ai-agents.gbp') }}" 
-                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.gbp') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }}"
+                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.gbp') ? 'text-fw-accent bg-fw-darker' : 'text-gray-400 hover:bg-fw-darker' }}"
                     >
                         📍 Google Business Profile
                     </a>
                     <a 
                         href="{{ route('ai-agents.google-ads') }}" 
-                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.google-ads') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }}"
+                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.google-ads') ? 'text-fw-accent bg-fw-darker' : 'text-gray-400 hover:bg-fw-darker' }}"
                     >
                         💰 Google Ads
                     </a>
                     <a 
                         href="{{ route('ai-agents.lsa') }}" 
-                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.lsa') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }}"
+                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.lsa') ? 'text-fw-accent bg-fw-darker' : 'text-gray-400 hover:bg-fw-darker' }}"
                     >
                         🎯 Local Services Ads
                     </a>
                     <a 
                         href="{{ route('ai-agents.meta-ads') }}" 
-                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.meta-ads') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }}"
+                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.meta-ads') ? 'text-fw-accent bg-fw-darker' : 'text-gray-400 hover:bg-fw-darker' }}"
                     >
                         📱 Meta Ads
                     </a>
                     <a 
                         href="{{ route('ai-agents.backlinks') }}" 
-                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.backlinks') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }}"
+                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.backlinks') ? 'text-fw-accent bg-fw-darker' : 'text-gray-400 hover:bg-fw-darker' }}"
                     >
                         🔗 Backlinks
                     </a>
                     <a 
                         href="{{ route('ai-agents.analytics') }}" 
-                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.analytics') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }}"
+                        class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('ai-agents.analytics') ? 'text-fw-accent bg-fw-darker' : 'text-gray-400 hover:bg-fw-darker' }}"
                     >
                         📊 Analytics
                     </a>
@@ -150,10 +150,10 @@
         </nav>
 
         <!-- Footer -->
-        <div class="px-3 py-4 border-t border-gray-200">
-            <div class="px-3 py-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
-                <p class="text-xs font-semibold text-gray-900">Need Help?</p>
-                <p class="text-xs text-gray-600 mt-1">Contact support</p>
+        <div class="px-3 py-4 border-t border-gray-800">
+            <div class="px-3 py-2 bg-fw-darker rounded-lg border border-gray-800">
+                <p class="text-xs font-semibold text-fw-accent">Need Help?</p>
+                <p class="text-xs text-gray-400 mt-1">Contact support</p>
             </div>
         </div>
     </div>
@@ -166,3 +166,4 @@
     x-cloak
     class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
 ></div>
+
