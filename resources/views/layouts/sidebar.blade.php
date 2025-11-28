@@ -1,6 +1,6 @@
 <aside 
-    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" 
-    class="fixed lg:relative inset-y-0 left-0 z-50 lg:z-0 w-64 bg-fw-dark border-r border-gray-800 transition-transform duration-300 ease-in-out lg:translate-x-0 h-screen"
+    class="flex flex-col h-screen bg-fw-dark border-r border-gray-800 w-64 flex-shrink-0"
+    :class="{ 'hidden lg:flex': !sidebarOpen, 'flex': sidebarOpen }"
 >
     <div class="flex flex-col h-full">
         <!-- Logo -->
@@ -158,12 +158,3 @@
         </div>
     </div>
 </aside>
-
-<!-- Overlay for mobile -->
-<div 
-    x-show="sidebarOpen" 
-    @click="sidebarOpen = false"
-    x-cloak
-    class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-></div>
-

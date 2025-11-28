@@ -21,14 +21,14 @@
         <script src="https://cdn.jsdelivr.net/npm/heroicons@2.0.18/24/outline/index.js"></script>
     </head>
     <body class="font-sans antialiased bg-fw-darker">
-        <div class="min-h-screen flex" x-data="{ sidebarOpen: window.innerWidth >= 1024, aiAgentsOpen: false }">
+        <div class="flex h-screen overflow-hidden" x-data="{ sidebarOpen: true, aiAgentsOpen: false }">
             <!-- Sidebar -->
             @include('layouts.sidebar')
 
             <!-- Main Content Area -->
-            <div class="flex-1 flex flex-col">
+            <div class="flex-1 flex flex-col overflow-hidden">
                 <!-- Top Navigation Bar -->
-                <header class="bg-fw-dark shadow-sm border-b border-gray-700 sticky top-0 z-10">
+                <header class="bg-fw-dark shadow-sm border-b border-gray-700 z-10 flex-shrink-0">
                     <div class="flex items-center justify-between px-6 py-4">
                         <!-- Mobile menu button -->
                         <button 
@@ -100,6 +100,14 @@
                 </main>
             </div>
         </div>
+
+        <!-- Mobile Overlay -->
+        <div 
+            x-show="sidebarOpen" 
+            @click="sidebarOpen = false"
+            x-cloak
+            class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+        ></div>
         
         <style>
             [x-cloak] { display: none !important; }
