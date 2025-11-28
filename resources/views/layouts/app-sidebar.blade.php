@@ -59,8 +59,8 @@
                             <!-- User dropdown -->
                             <x-dropdown align="right" width="48">
                                 <x-slot name="trigger">
-                                    <button class="flex items-center space-x-2 p-2 rounded-md text-gray-700 hover:bg-gray-100">
-                                        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
+                                    <button class="flex items-center space-x-2 p-2 rounded-md text-gray-300 hover:bg-fw-darker">
+                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-fw-accent to-fw-gold flex items-center justify-center text-fw-darker font-semibold">
                                             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                         </div>
                                         <span class="hidden md:block font-medium">{{ Auth::user()->name }}</span>
