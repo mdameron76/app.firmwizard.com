@@ -67,4 +67,9 @@ class Firm extends Model
     {
         return $this->hasMany(AiJob::class);
     }
+
+    public function integrations(): HasMany
+    {
+        return $this->hasMany(Integration::class);
+    }
 }

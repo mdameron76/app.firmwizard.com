@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CrawlerController;
 use App\Http\Controllers\Api\FirmController;
 use App\Http\Controllers\Api\FirmProfileController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\IntegrationController;
 use App\Http\Controllers\Api\MetricsController;
 use App\Http\Controllers\Api\N8nWebhookController;
 use App\Http\Controllers\Api\OnboardingController;
@@ -27,6 +28,16 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Firm Profile
     Route::get('firms/{firm}/profile', [FirmProfileController::class, 'show']);
+    
+    // Integrations
+    Route::get('integrations/platforms', [IntegrationController::class, 'platforms']);
+    Route::get('integrations/auth-fields/{authType}', [IntegrationController::class, 'authFields']);
+    Route::get('integrations', [IntegrationController::class, 'index']);
+    Route::post('integrations', [IntegrationController::class, 'store']);
+    Route::get('integrations/{integration}', [IntegrationController::class, 'show']);
+    Route::put('integrations/{integration}', [IntegrationController::class, 'update']);
+    Route::delete('integrations/{integration}', [IntegrationController::class, 'destroy']);
+    Route::post('integrations/{integration}/test', [IntegrationController::class, 'test']);
     
     // Onboarding Wizard
     Route::post('firms/{firm}/onboarding/start', [OnboardingController::class, 'start']);
