@@ -10,11 +10,11 @@
 
         <!-- Quick Stats -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-fw-dark rounded-lg shadow p-6 border border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Pending Tasks</p>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">12</p>
+                        <p class="text-sm font-medium text-gray-400">Pending Tasks</p>
+                        <p class="text-3xl font-bold text-white mt-2">12</p>
                     </div>
                     <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -25,11 +25,11 @@
                 <p class="text-xs text-gray-500 mt-2">Awaiting your approval</p>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-fw-dark rounded-lg shadow p-6 border border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Active Agents</p>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">9</p>
+                        <p class="text-sm font-medium text-gray-400">Active Agents</p>
+                        <p class="text-3xl font-bold text-white mt-2">9</p>
                     </div>
                     <div class="w-12 h-12 bg-fw-accent/20 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-fw-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,11 +40,11 @@
                 <p class="text-xs text-gray-500 mt-2">Running smoothly</p>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-fw-dark rounded-lg shadow p-6 border border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">This Month</p>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">847</p>
+                        <p class="text-sm font-medium text-gray-400">This Month</p>
+                        <p class="text-3xl font-bold text-white mt-2">847</p>
                     </div>
                     <div class="w-12 h-12 bg-fw-gold/20 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-fw-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,11 +55,11 @@
                 <p class="text-xs text-gray-500 mt-2">Actions completed</p>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-fw-dark rounded-lg shadow p-6 border border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Integrations</p>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">3</p>
+                        <p class="text-sm font-medium text-gray-400">Integrations</p>
+                        <p class="text-3xl font-bold text-white mt-2">3</p>
                     </div>
                     <div class="w-12 h-12 bg-fw-dark/10 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-fw-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,12 +73,12 @@
 
         <!-- AI Agents Grid -->
         <div>
-            <h3 class="text-xl font-bold text-gray-900 mb-4">AI Agents</h3>
+            <h3 class="text-xl font-bold text-white mb-4">AI Agents</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 
                 <!-- Blog Posts Agent -->
                 <a href="{{ route('ai-agents.blog-posts') }}" class="block group">
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent group-hover:border-fw-accent">
+                    <div class="bg-fw-dark rounded-lg shadow hover:shadow-lg transition-shadow p-6 border border-gray-700 group-hover:border-fw-accent">
                         <div class="flex items-start justify-between mb-4">
                             <div class="text-4xl">📝</div>
                             <span class="px-2 py-1 bg-fw-accent/20 text-fw-dark text-xs font-semibold rounded-full flex items-center">
@@ -86,8 +86,8 @@
                                 Active
                             </span>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Blog Posts</h4>
-                        <p class="text-sm text-gray-600 mb-4">Generate SEO-optimized blog content based on your firm profile</p>
+                        <h4 class="text-lg font-semibold text-white mb-2">Blog Posts</h4>
+                        <p class="text-sm text-gray-400 mb-4">Generate SEO-optimized blog content based on your firm profile</p>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-fw-gold font-medium">3 pending approval</span>
                             <span class="text-gray-400">Last run: 2 hours ago</span>
@@ -97,7 +97,7 @@
 
                 <!-- Competitor Analysis Agent -->
                 <a href="{{ route('ai-agents.competitor-analysis') }}" class="block group">
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent group-hover:border-fw-accent">
+                    <div class="bg-fw-dark rounded-lg shadow hover:shadow-lg transition-shadow p-6 border border-gray-700 group-hover:border-fw-accent">
                         <div class="flex items-start justify-between mb-4">
                             <div class="text-4xl">🔍</div>
                             <span class="px-2 py-1 bg-fw-accent/20 text-fw-dark text-xs font-semibold rounded-full flex items-center">
@@ -105,8 +105,8 @@
                                 Active
                             </span>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Competitor Analysis</h4>
-                        <p class="text-sm text-gray-600 mb-4">Monitor and analyze your competitors' marketing strategies</p>
+                        <h4 class="text-lg font-semibold text-white mb-2">Competitor Analysis</h4>
+                        <p class="text-sm text-gray-400 mb-4">Monitor and analyze your competitors' marketing strategies</p>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-fw-accent font-medium">Up to date</span>
                             <span class="text-gray-400">Last run: 5 hours ago</span>
@@ -116,7 +116,7 @@
 
                 <!-- Website Analysis Agent -->
                 <a href="{{ route('ai-agents.website-analysis') }}" class="block group">
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent group-hover:border-fw-accent">
+                    <div class="bg-fw-dark rounded-lg shadow hover:shadow-lg transition-shadow p-6 border border-gray-700 group-hover:border-fw-accent">
                         <div class="flex items-start justify-between mb-4">
                             <div class="text-4xl">🌐</div>
                             <span class="px-2 py-1 bg-fw-accent/20 text-fw-dark text-xs font-semibold rounded-full flex items-center">
@@ -124,8 +124,8 @@
                                 Active
                             </span>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Website Analysis</h4>
-                        <p class="text-sm text-gray-600 mb-4">Get insights on SEO, performance, and content gaps</p>
+                        <h4 class="text-lg font-semibold text-white mb-2">Website Analysis</h4>
+                        <p class="text-sm text-gray-400 mb-4">Get insights on SEO, performance, and content gaps</p>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-fw-gold font-medium">2 recommendations</span>
                             <span class="text-gray-400">Last run: 1 day ago</span>
@@ -135,13 +135,13 @@
 
                 <!-- Google Business Profile Agent -->
                 <a href="{{ route('ai-agents.gbp') }}" class="block group">
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent group-hover:border-fw-accent">
+                    <div class="bg-fw-dark rounded-lg shadow hover:shadow-lg transition-shadow p-6 border border-gray-700 group-hover:border-fw-accent">
                         <div class="flex items-start justify-between mb-4">
                             <div class="text-4xl">📍</div>
                             <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">Inactive</span>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Google Business Profile</h4>
-                        <p class="text-sm text-gray-600 mb-4">Optimize your GBP listing for local search</p>
+                        <h4 class="text-lg font-semibold text-white mb-2">Google Business Profile</h4>
+                        <p class="text-sm text-gray-400 mb-4">Optimize your GBP listing for local search</p>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500 font-medium">Not configured</span>
                             <span class="text-gray-400">Never run</span>
@@ -151,13 +151,13 @@
 
                 <!-- Google Ads Agent -->
                 <a href="{{ route('ai-agents.google-ads') }}" class="block group">
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent group-hover:border-fw-accent">
+                    <div class="bg-fw-dark rounded-lg shadow hover:shadow-lg transition-shadow p-6 border border-gray-700 group-hover:border-fw-accent">
                         <div class="flex items-start justify-between mb-4">
                             <div class="text-4xl">💰</div>
                             <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">Inactive</span>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Google Ads</h4>
-                        <p class="text-sm text-gray-600 mb-4">Get recommendations for your Google Ads campaigns</p>
+                        <h4 class="text-lg font-semibold text-white mb-2">Google Ads</h4>
+                        <p class="text-sm text-gray-400 mb-4">Get recommendations for your Google Ads campaigns</p>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500 font-medium">Not configured</span>
                             <span class="text-gray-400">Never run</span>
@@ -167,13 +167,13 @@
 
                 <!-- Local Services Ads Agent -->
                 <a href="{{ route('ai-agents.lsa') }}" class="block group">
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent group-hover:border-fw-accent">
+                    <div class="bg-fw-dark rounded-lg shadow hover:shadow-lg transition-shadow p-6 border border-gray-700 group-hover:border-fw-accent">
                         <div class="flex items-start justify-between mb-4">
                             <div class="text-4xl">🎯</div>
                             <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">Inactive</span>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Local Services Ads</h4>
-                        <p class="text-sm text-gray-600 mb-4">Optimize your LSA performance and profile</p>
+                        <h4 class="text-lg font-semibold text-white mb-2">Local Services Ads</h4>
+                        <p class="text-sm text-gray-400 mb-4">Optimize your LSA performance and profile</p>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500 font-medium">Not configured</span>
                             <span class="text-gray-400">Never run</span>
@@ -183,13 +183,13 @@
 
                 <!-- Meta Ads Agent -->
                 <a href="{{ route('ai-agents.meta-ads') }}" class="block group">
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent group-hover:border-fw-accent">
+                    <div class="bg-fw-dark rounded-lg shadow hover:shadow-lg transition-shadow p-6 border border-gray-700 group-hover:border-fw-accent">
                         <div class="flex items-start justify-between mb-4">
                             <div class="text-4xl">📱</div>
                             <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">Inactive</span>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Meta Ads</h4>
-                        <p class="text-sm text-gray-600 mb-4">Facebook and Instagram ad recommendations</p>
+                        <h4 class="text-lg font-semibold text-white mb-2">Meta Ads</h4>
+                        <p class="text-sm text-gray-400 mb-4">Facebook and Instagram ad recommendations</p>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500 font-medium">Not configured</span>
                             <span class="text-gray-400">Never run</span>
@@ -199,13 +199,13 @@
 
                 <!-- Backlinks Agent -->
                 <a href="{{ route('ai-agents.backlinks') }}" class="block group">
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent group-hover:border-fw-accent">
+                    <div class="bg-fw-dark rounded-lg shadow hover:shadow-lg transition-shadow p-6 border border-gray-700 group-hover:border-fw-accent">
                         <div class="flex items-start justify-between mb-4">
                             <div class="text-4xl">🔗</div>
                             <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">Inactive</span>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Backlinks</h4>
-                        <p class="text-sm text-gray-600 mb-4">Find valuable backlink opportunities for SEO</p>
+                        <h4 class="text-lg font-semibold text-white mb-2">Backlinks</h4>
+                        <p class="text-sm text-gray-400 mb-4">Find valuable backlink opportunities for SEO</p>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500 font-medium">Not configured</span>
                             <span class="text-gray-400">Never run</span>
@@ -215,13 +215,13 @@
 
                 <!-- Analytics Agent -->
                 <a href="{{ route('ai-agents.analytics') }}" class="block group">
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border-2 border-transparent group-hover:border-fw-accent">
+                    <div class="bg-fw-dark rounded-lg shadow hover:shadow-lg transition-shadow p-6 border border-gray-700 group-hover:border-fw-accent">
                         <div class="flex items-start justify-between mb-4">
                             <div class="text-4xl">📊</div>
                             <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">Inactive</span>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Analytics</h4>
-                        <p class="text-sm text-gray-600 mb-4">Unified analytics across all platforms</p>
+                        <h4 class="text-lg font-semibold text-white mb-2">Analytics</h4>
+                        <p class="text-sm text-gray-400 mb-4">Unified analytics across all platforms</p>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500 font-medium">Not configured</span>
                             <span class="text-gray-400">Never run</span>

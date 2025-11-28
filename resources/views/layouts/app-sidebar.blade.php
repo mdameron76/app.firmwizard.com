@@ -20,7 +20,7 @@
         <!-- Heroicons -->
         <script src="https://cdn.jsdelivr.net/npm/heroicons@2.0.18/24/outline/index.js"></script>
     </head>
-    <body class="font-sans antialiased bg-gray-50">
+    <body class="font-sans antialiased bg-fw-darker">
         <div class="min-h-screen flex" x-data="{ sidebarOpen: true, aiAgentsOpen: false }">
             <!-- Sidebar -->
             @include('layouts.sidebar')
@@ -28,7 +28,7 @@
             <!-- Main Content Area -->
             <div class="flex-1 flex flex-col">
                 <!-- Top Navigation Bar -->
-                <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
+                <header class="bg-fw-dark shadow-sm border-b border-gray-700 sticky top-0 z-10">
                     <div class="flex items-center justify-between px-6 py-4">
                         <!-- Mobile menu button -->
                         <button 
@@ -95,7 +95,7 @@
                 </header>
 
                 <!-- Page Content -->
-                <main class="flex-1 overflow-y-auto p-6">
+                <main class="flex-1 overflow-y-auto p-6 bg-fw-darker">
                     @yield('content')
                 </main>
             </div>
