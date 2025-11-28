@@ -1,10 +1,6 @@
-<x-app-sidebar>
-    <x-slot name="header">
-        <h2 class="text-2xl font-bold text-gray-900">
-            Dashboard
-        </h2>
-    </x-slot>
+@extends('layouts.app-sidebar')
 
+@section('content')
     <div class="space-y-6">
         <!-- Welcome Section -->
         <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-6 text-white">
@@ -236,4 +232,4 @@
             </div>
         </div>
     </div>
-</x-app-sidebar>
+@endsection
