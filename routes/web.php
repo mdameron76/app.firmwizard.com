@@ -21,9 +21,32 @@ Route::middleware('auth')->group(function () {
     Route::post('/onboarding/step/{step}', [OnboardingWizardController::class, 'store'])->name('onboarding.step.store');
     
     // AI Agents Routes
-    Route::get('/ai-agents', [AiAgentController::class, 'index'])->name('ai-agents.index');
-    Route::post('/ai-agents/{agentType}/trigger', [AiAgentController::class, 'trigger'])->name('ai-agents.trigger');
-    Route::get('/ai-agents/jobs/{job}', [AiAgentController::class, 'show'])->name('ai-agents.show');
+    Route::prefix('ai-agents')->name('ai-agents.')->group(function () {
+        Route::get('/', [AiAgentController::class, 'index'])->name('index');
+        Route::post('/{agentType}/trigger', [AiAgentController::class, 'trigger'])->name('trigger');
+        Route::get('/jobs/{job}', [AiAgentController::class, 'show'])->name('show');
+        
+        // Individual Agent Pages
+        Route::get('/blog-posts', function() { return view('ai-agents.blog-posts'); })->name('blog-posts');
+        Route::get('/competitor-analysis', function() { return view('ai-agents.competitor-analysis'); })->name('competitor-analysis');
+        Route::get('/website-analysis', function() { return view('ai-agents.website-analysis'); })->name('website-analysis');
+        Route::get('/gbp', function() { return view('ai-agents.gbp'); })->name('gbp');
+        Route::get('/google-ads', function() { return view('ai-agents.google-ads'); })->name('google-ads');
+        Route::get('/lsa', function() { return view('ai-agents.lsa'); })->name('lsa');
+        Route::get('/meta-ads', function() { return view('ai-agents.meta-ads'); })->name('meta-ads');
+        Route::get('/backlinks', function() { return view('ai-agents.backlinks'); })->name('backlinks');
+        Route::get('/analytics', function() { return view('ai-agents.analytics'); })->name('analytics');
+    });
+    
+    // Integrations Routes
+    Route::prefix('integrations')->name('integrations.')->group(function () {
+        Route::get('/', function() { return view('integrations.index'); })->name('index');
+    });
+    
+    // Settings Routes
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', function() { return view('settings.index'); })->name('index');
+    });
     
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
