@@ -41,11 +41,9 @@
                         </button>
 
                         <!-- Page Title -->
-                        @isset($header)
-                            <div class="flex-1">
-                                {{ $header }}
-                            </div>
-                        @endisset
+                        <div class="flex-1">
+                            @yield('header')
+                        </div>
 
                         <!-- User Menu -->
                         <div class="flex items-center space-x-4">
@@ -98,7 +96,7 @@
 
                 <!-- Page Content -->
                 <main class="flex-1 overflow-y-auto p-6">
-                    {{ $slot }}
+                    @yield('content')
                 </main>
             </div>
         </div>
