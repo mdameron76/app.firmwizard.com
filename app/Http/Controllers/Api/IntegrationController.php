@@ -19,7 +19,16 @@ class IntegrationController extends Controller
     }
 
     /**
-     * Get available integration platforms
+     * @OA\Get(
+     *     path="/api/integrations/platforms",
+     *     summary="Get available integration platforms",
+     *     tags={"Integrations"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of available platforms"
+     *     )
+     * )
      */
     public function platforms(): JsonResponse
     {
@@ -30,7 +39,16 @@ class IntegrationController extends Controller
     }
 
     /**
-     * List all integrations for a firm
+     * @OA\Get(
+     *     path="/api/integrations",
+     *     summary="List all integrations for current firm",
+     *     tags={"Integrations"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of integrations"
+     *     )
+     * )
      */
     public function index(Request $request): JsonResponse
     {
@@ -54,7 +72,25 @@ class IntegrationController extends Controller
     }
 
     /**
-     * Create a new integration
+     * @OA\Post(
+     *     path="/api/integrations",
+     *     summary="Create a new integration",
+     *     tags={"Integrations"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"platform","name","auth_type","credentials"},
+     *             @OA\Property(property="platform", type="string", example="wordpress"),
+     *             @OA\Property(property="name", type="string", example="Main WordPress Site"),
+     *             @OA\Property(property="auth_type", type="string", enum={"bearer_token","oauth2","jwt","openid"}),
+     *             @OA\Property(property="credentials", type="object"),
+     *             @OA\Property(property="config", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Integration created"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
      */
     public function store(Request $request): JsonResponse
     {
@@ -101,7 +137,20 @@ class IntegrationController extends Controller
     }
 
     /**
-     * Get a single integration
+     * @OA\Get(
+     *     path="/api/integrations/{integration}",
+     *     summary="Get a single integration",
+     *     tags={"Integrations"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="integration",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Integration details"),
+     *     @OA\Response(response=404, description="Integration not found")
+     * )
      */
     public function show(Request $request, Integration $integration): JsonResponse
     {
@@ -121,7 +170,28 @@ class IntegrationController extends Controller
     }
 
     /**
-     * Update an integration
+     * @OA\Put(
+     *     path="/api/integrations/{integration}",
+     *     summary="Update an integration",
+     *     tags={"Integrations"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="integration",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="credentials", type="object"),
+     *             @OA\Property(property="config", type="object"),
+     *             @OA\Property(property="status", type="string", enum={"active","inactive","error"})
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Integration updated"),
+     *     @OA\Response(response=404, description="Integration not found")
+     * )
      */
     public function update(Request $request, Integration $integration): JsonResponse
     {
@@ -167,7 +237,20 @@ class IntegrationController extends Controller
     }
 
     /**
-     * Delete an integration
+     * @OA\Delete(
+     *     path="/api/integrations/{integration}",
+     *     summary="Delete an integration",
+     *     tags={"Integrations"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="integration",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Integration deleted"),
+     *     @OA\Response(response=404, description="Integration not found")
+     * )
      */
     public function destroy(Request $request, Integration $integration): JsonResponse
     {
@@ -189,7 +272,20 @@ class IntegrationController extends Controller
     }
 
     /**
-     * Test integration connection
+     * @OA\Post(
+     *     path="/api/integrations/{integration}/test",
+     *     summary="Test integration connection",
+     *     tags={"Integrations"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="integration",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Connection test result"),
+     *     @OA\Response(response=404, description="Integration not found")
+     * )
      */
     public function test(Request $request, Integration $integration): JsonResponse
     {
@@ -212,7 +308,20 @@ class IntegrationController extends Controller
     }
 
     /**
-     * Get auth fields for a specific auth type
+     * @OA\Get(
+     *     path="/api/integrations/auth-fields/{authType}",
+     *     summary="Get auth fields for a specific auth type",
+     *     tags={"Integrations"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="authType",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string", enum={"bearer_token","oauth2","jwt","openid"})
+     *     ),
+     *     @OA\Response(response=200, description="Auth fields"),
+     *     @OA\Response(response=400, description="Invalid auth type")
+     * )
      */
     public function authFields(Request $request, string $authType): JsonResponse
     {
