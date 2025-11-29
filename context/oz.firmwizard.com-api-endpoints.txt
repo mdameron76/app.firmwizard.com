@@ -1,0 +1,22 @@
+Complete API Endpoint List:
+Firm Profiles:
+GET /api/n8n/firms/{firmId}/profile - Get firm profile
+POST /api/n8n/firms/{firmId}/profile - Create/update firm profile
+PATCH /api/n8n/firms/{firmId}/profile - Partially update firm profile
+DELETE /api/n8n/firms/{firmId}/profile - Delete firm profile
+AI Recommendations:
+POST /api/n8n/recommendations - Store AI recommendation
+GET /api/n8n/recommendations/{firmId} - Get recommendations for firm
+GET /api/n8n/recommendations/{firmId}/latest - Get latest recommendation
+PATCH /api/n8n/recommendations/{id}/status - Update recommendation status
+DELETE /api/n8n/recommendations/{id} - Delete recommendation
+AI Training Events:
+POST /api/n8n/training-events - Store training event
+GET /api/n8n/training-events - Get all training events
+GET /api/n8n/training-events/{firmId} - Get events for firm
+GET /api/n8n/training-events/show/{id} - Get specific event
+DELETE /api/n8n/training-events/{id} - Delete event
+
+
+use: -H "Authorization: Bearer c9f203095681957ee3f2b3e9056ce23cad8cbb161535a88bd1cb7e3bcd6d356b"
+example: curl -s -X GET "https://oz.firmwizard.com/api/n8n/training-events/1" -H "Authorization: Bearer c9f203095681957ee3f2b3e9056ce23cad8cbb161535a88bd1cb7e3bcd6d356b" | head -20

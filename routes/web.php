@@ -4,6 +4,7 @@ use App\Http\Controllers\AiAgentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OnboardingWizardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -13,6 +14,10 @@ Route::get('/', function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+Route::get('/analytics', function () {
+    return view('pages.dashboards.analytics');
+})->middleware(['auth', 'verified'])->name('analytics');
 
 Route::middleware('auth')->group(function () {
     // Onboarding Wizard Routes
@@ -45,7 +50,15 @@ Route::middleware('auth')->group(function () {
     
     // Settings Routes
     Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('/', function() { return view('settings.index'); })->name('index');
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
+        Route::post('/profile', [SettingsController::class, 'updateProfile'])->name('profile.update');
+        Route::post('/password', [SettingsController::class, 'updatePassword'])->name('password.update');
+        Route::post('/profile-picture', [SettingsController::class, 'updateProfilePicture'])->name('profile-picture.update');
+        Route::post('/firm', [SettingsController::class, 'updateFirm'])->name('firm.update');
+        Route::post('/pixel/regenerate', [SettingsController::class, 'regeneratePixelKey'])->name('pixel.regenerate');
+        Route::post('/locations', [SettingsController::class, 'storeLocation'])->name('locations.store');
+        Route::put('/locations/{id}', [SettingsController::class, 'updateLocation'])->name('locations.update');
+        Route::delete('/locations/{id}', [SettingsController::class, 'deleteLocation'])->name('locations.delete');
     });
     
     // Profile Routes

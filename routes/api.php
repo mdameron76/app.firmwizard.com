@@ -11,11 +11,15 @@ use App\Http\Controllers\Api\IntegrationController;
 use App\Http\Controllers\Api\MetricsController;
 use App\Http\Controllers\Api\N8nWebhookController;
 use App\Http\Controllers\Api\OnboardingController;
+use App\Http\Controllers\Api\PixelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Public health check endpoint (no authentication required)
 Route::get('/health', [HealthController::class, 'check']);
+
+// Pixel collection endpoint (no authentication - uses API key validation)
+Route::post('/pixel/collect', [PixelController::class, 'collect']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

@@ -1,0 +1,47 @@
+/* Fix for initial layout positioning on page load */
+/* Force main content to have correct margin on load for doublemenu */
+html[data-vertical-style="doublemenu"] .main-content {
+    margin-inline-start: 70px !important;
+}
+
+html[data-vertical-style="doublemenu"][data-toggled="double-menu-open"] .main-content {
+    margin-inline-start: 290px !important;
+}
+
+/* Hide second menu by default on page load */
+html[data-vertical-style="doublemenu"] .slide-menu {
+    display: none !important;
+}
+
+html[data-vertical-style="doublemenu"] .slide.open > .slide-menu {
+    display: block !important;
+}
+
+/* Fix for slide__category items - prevent hover effects and submenu behavior */
+.slide__category {
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+.slide__category::before {
+    display: none !important;
+}
+
+.slide__category:hover {
+    background: transparent !important;
+}
+
+@media (min-width: 992px) {
+    html[data-vertical-style="doublemenu"] .main-content {
+        margin-inline-start: 70px !important;
+        transition: margin-inline-start 0.3s ease;
+    }
+    
+    html[data-vertical-style="doublemenu"][data-toggled="double-menu-open"] .main-content {
+        margin-inline-start: 290px !important;
+    }
+    
+    html[data-vertical-style="doublemenu"][data-toggled="double-menu-close"] .main-content {
+        margin-inline-start: 70px !important;
+    }
+}

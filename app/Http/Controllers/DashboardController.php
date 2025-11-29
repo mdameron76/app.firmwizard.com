@@ -13,7 +13,7 @@ class DashboardController extends Controller
      */
     public function index(Request $request): View
     {
-        return view('dashboard-new');
+        return view('pages.dashboards.index');
     }
 
     /**
