@@ -93,6 +93,47 @@ class GbpSyncService
     }
 
     /**
+     * Get Google Places place_id from GBP location_id
+     */
+    public function getPlaceIdFromGbpLocation(Integration $integration, string $locationId): string
+    {
+        $http = Http::withToken($integration->access_token);
+
+        // Disable SSL verification for local development
+        if (config('app.env') === 'local') {
+            $http = $http->withOptions(['verify' => false]);
+        }
+
+        $locationName = "locations/{$locationId}";
+        $response = $http->get("https://mybusinessbusinessinformation.googleapis.com/v1/{$locationName}", [
+            'readMask' => 'name,metadata',
+        ]);
+
+        if (!$response->successful()) {
+            Log::error('Failed to fetch GBP location for place_id', [
+                'location_id' => $locationId,
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            throw new \Exception('Failed to fetch GBP location: ' . $response->body());
+        }
+
+        $location = $response->json();
+        $placeId = $location['metadata']['placeId'] ?? null;
+
+        if (!$placeId) {
+            throw new \Exception("No place_id found for GBP location: {$locationId}");
+        }
+
+        Log::info('Retrieved place_id from GBP location', [
+            'location_id' => $locationId,
+            'place_id' => $placeId,
+        ]);
+
+        return $placeId;
+    }
+
+    /**
      * Get all locations for the GBP account
      */
     private function getLocations(Integration $integration): array

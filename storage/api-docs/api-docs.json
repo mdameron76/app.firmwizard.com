@@ -413,6 +413,171 @@
                 }
             }
         },
+        "/api/gbp/{locationId}/sync": {
+            "get": {
+                "tags": [
+                    "GBP Locations"
+                ],
+                "summary": "Sync GBP location with Google Places data",
+                "description": "Converts GBP location_id to place_id and syncs full business data from Google Places API",
+                "operationId": "syncGbpLocation",
+                "parameters": [
+                    {
+                        "name": "locationId",
+                        "in": "path",
+                        "description": "GBP location ID (numeric string)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "9393481967568809184"
+                        }
+                    },
+                    {
+                        "name": "X-API-Key",
+                        "in": "header",
+                        "description": "N8N API Key for authentication",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "N8N API Key for authentication (alternative to header)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "firm_id",
+                        "in": "query",
+                        "description": "Firm ID for multi-tenant support",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully synced location data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "locationId": {
+                                            "type": "string",
+                                            "example": "9393481967568809184"
+                                        },
+                                        "placeId": {
+                                            "type": "string",
+                                            "example": "ChIJr7uyr1-3dYgRhHY8ZJTAiF0"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "type": "string"
+                                                },
+                                                "phone": {
+                                                    "type": "string"
+                                                },
+                                                "website": {
+                                                    "type": "string"
+                                                },
+                                                "hours": {
+                                                    "type": "object"
+                                                },
+                                                "categories": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "rating": {
+                                                    "type": "number",
+                                                    "example": 4.6
+                                                },
+                                                "reviews": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "photos": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "GBP integration not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
         "/api/integrations/platforms": {
             "get": {
                 "tags": [
@@ -900,6 +1065,10 @@
         {
             "name": "Crawler",
             "description": "Crawler"
+        },
+        {
+            "name": "GBP Locations",
+            "description": "GBP Locations"
         },
         {
             "name": "Integrations",

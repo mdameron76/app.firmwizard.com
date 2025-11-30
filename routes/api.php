@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AiSuggestionController;
 use App\Http\Controllers\Api\CrawlerController;
 use App\Http\Controllers\Api\FirmController;
 use App\Http\Controllers\Api\FirmProfileController;
+use App\Http\Controllers\Api\GbpLocationController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\IntegrationController;
 use App\Http\Controllers\Api\MetricsController;
@@ -95,3 +96,6 @@ Route::patch('n8n/firms/{firm}/profile', [N8nWebhookController::class, 'updatePr
 
 // N8N Integrations API (no auth - uses API key validation)
 Route::get('n8n/integrations/active', [IntegrationsController::class, 'listActive']);
+
+// GBP Location Sync API (no auth - uses API key validation)
+Route::get('gbp/{locationId}/sync', [GbpLocationController::class, 'sync']);
