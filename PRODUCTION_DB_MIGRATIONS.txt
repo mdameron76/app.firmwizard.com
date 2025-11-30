@@ -1,0 +1,65 @@
+================================================================================
+  PRODUCTION DATABASE MIGRATIONS - RUN THESE ON OZ.FIRMWIZARD.COM
+================================================================================
+
+SSH to production server and run:
+
+cd /path/to/app.firmwizard.com
+php artisan migrate
+
+This will run 2 new migrations:
+
+  1. 2025_11_30_003807_add_oauth_fields_to_integrations_table.php
+     - Adds OAuth columns to 'integrations' table
+     - Columns: display_name, access_token, refresh_token,
+                token_expires_at, last_sync_message
+     - SAFE: All columns are nullable
+
+  2. 2025_11_30_044715_create_gbp_locations_table.php
+     - Creates new 'gbp_locations' table
+     - Stores Google Places business data
+     - Foreign key to 'firms' table
+     - SAFE: New table, no data affected
+
+================================================================================
+  ENVIRONMENT VARIABLES - ADD TO PRODUCTION .ENV
+================================================================================
+
+Add this line to /path/to/app.firmwizard.com/.env:
+
+GOOGLE_PLACES_API_KEY=your_api_key_here
+
+(Get API key from Google Cloud Console → APIs & Services → Credentials)
+
+================================================================================
+  POST-DEPLOYMENT COMMANDS
+================================================================================
+
+After running migrations, execute:
+
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan l5-swagger:generate
+
+================================================================================
+  VERIFY DEPLOYMENT
+================================================================================
+
+1. Check migrations ran:
+   php artisan migrate:status
+
+2. Test GBP OAuth:
+   Visit: https://app.firmwizard.com/integrations
+   Click "Connect" on Google Business Profile
+
+3. Test Places API:
+   curl -X GET "https://app.firmwizard.com/api/gbp/9393481967568809184/sync?firm_id=1" \
+     -H "X-API-Key: your_n8n_api_key"
+
+4. View Swagger docs:
+   https://app.firmwizard.com/api/documentation
+
+================================================================================
+
+For full deployment details, see: context/DEPLOYMENT_CHECKLIST.md

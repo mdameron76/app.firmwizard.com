@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\GbpLocation;
+use App\Models\GbpLocationHistory;
 use App\Models\Integration;
 use App\Services\GbpSyncService;
 use App\Services\GooglePlacesService;
@@ -131,6 +132,15 @@ class GbpLocationController extends Controller
                     'status' => 'connected',
                 ])
             );
+
+            // Save historical snapshot
+            GbpLocationHistory::create(array_merge($normalizedData, [
+                'gbp_location_id' => $gbpLocation->id,
+                'firm_id' => $firmId,
+                'gbp_location_string_id' => $locationId,
+                'place_id' => $placeId,
+                'synced_at' => now(),
+            ]));
 
             // Log the sync
             Log::info('GBP location synced successfully', [
