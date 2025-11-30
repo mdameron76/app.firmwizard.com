@@ -15,16 +15,26 @@ class Integration extends Model
         'firm_id',
         'platform',
         'name',
+        'display_name',
         'auth_type',
         'credentials',
+        'access_token',
+        'refresh_token',
+        'token_expires_at',
+        'api_key',
         'config',
+        'settings_json',
         'status',
         'last_synced_at',
+        'last_sync_status',
+        'last_sync_message',
     ];
 
     protected $casts = [
         'config' => 'array',
+        'settings_json' => 'array',
         'last_synced_at' => 'datetime',
+        'token_expires_at' => 'datetime',
     ];
 
     protected $hidden = [
@@ -117,5 +127,35 @@ class Integration extends Model
     public function updateSyncTime(): void
     {
         $this->update(['last_synced_at' => now()]);
+    }
+
+    /**
+     * Get access token from direct column or credentials
+     */
+    public function getAccessTokenAttribute($value): ?string
+    {
+        // Try direct column first
+        if ($value) {
+            return $value;
+        }
+
+        // Fall back to credentials JSON
+        $credentials = $this->getAttributeValue('credentials');
+        return $credentials['access_token'] ?? null;
+    }
+
+    /**
+     * Get refresh token from direct column or credentials
+     */
+    public function getRefreshTokenAttribute($value): ?string
+    {
+        // Try direct column first
+        if ($value) {
+            return $value;
+        }
+
+        // Fall back to credentials JSON
+        $credentials = $this->getAttributeValue('credentials');
+        return $credentials['refresh_token'] ?? null;
     }
 }

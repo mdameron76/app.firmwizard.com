@@ -86,6 +86,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | N8N API Key
+    |--------------------------------------------------------------------------
+    |
+    | This API key is used to authenticate requests from n8n automation
+    | workflows to access integration data and other protected endpoints.
+    |
+    */
+
+    'n8n_api_key' => env('N8N_API_KEY'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

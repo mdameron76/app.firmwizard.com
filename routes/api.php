@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\MetricsController;
 use App\Http\Controllers\Api\N8nWebhookController;
 use App\Http\Controllers\Api\OnboardingController;
 use App\Http\Controllers\Api\PixelController;
+use App\Http\Controllers\IntegrationsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -91,3 +92,6 @@ Route::middleware('auth:sanctum')->group(function () {
 // N8N Webhook routes (no auth - will use API key validation)
 Route::post('n8n/firms/{firm}/profile', [N8nWebhookController::class, 'storeProfile']);
 Route::patch('n8n/firms/{firm}/profile', [N8nWebhookController::class, 'updateProfile']);
+
+// N8N Integrations API (no auth - uses API key validation)
+Route::get('n8n/integrations/active', [IntegrationsController::class, 'listActive']);

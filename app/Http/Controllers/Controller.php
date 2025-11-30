@@ -15,6 +15,13 @@ namespace App\Http\Controllers;
  *     url="http://127.0.0.1:8000",
  *     description="Local Development Server"
  * )
+ * @OA\SecurityScheme(
+ *     securityScheme="ApiKeyAuth",
+ *     type="apiKey",
+ *     in="header",
+ *     name="X-API-Key",
+ *     description="N8N API Key for authentication"
+ * )
  */
 abstract class Controller
 {

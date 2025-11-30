@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AiAgentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\IntegrationsController;
+use App\Http\Controllers\IntegrationsOAuthController;
 use App\Http\Controllers\OnboardingWizardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -45,7 +47,12 @@ Route::middleware('auth')->group(function () {
     
     // Integrations Routes
     Route::prefix('integrations')->name('integrations.')->group(function () {
-        Route::get('/', function() { return view('integrations.index'); })->name('index');
+        Route::get('/', [IntegrationsController::class, 'index'])->name('index');
+        Route::post('/{id}/sync', [IntegrationsController::class, 'sync'])->name('sync');
+
+        // OAuth routes - IMPORTANT: callback route must come BEFORE the dynamic {platform} route
+        Route::get('/oauth/google/callback', [IntegrationsOAuthController::class, 'googleCallback'])->name('oauth.google.callback');
+        Route::get('/oauth/google/{platform}', [IntegrationsOAuthController::class, 'googleAuth'])->name('oauth.google');
     });
     
     // Settings Routes

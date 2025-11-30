@@ -413,6 +413,433 @@
                 }
             }
         },
+        "/api/integrations/platforms": {
+            "get": {
+                "tags": [
+                    "Integrations"
+                ],
+                "summary": "Get available integration platforms",
+                "operationId": "4cdb37f87b572a0ba901cea6fadadbd4",
+                "responses": {
+                    "200": {
+                        "description": "List of available platforms"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/integrations": {
+            "get": {
+                "tags": [
+                    "Integrations"
+                ],
+                "summary": "List all integrations for current firm",
+                "operationId": "c5d16f47b7ca9dbb68db4b84ed4592e0",
+                "responses": {
+                    "200": {
+                        "description": "List of integrations"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Integrations"
+                ],
+                "summary": "Create a new integration",
+                "operationId": "8c21532b11425850c7f499a7c18f785c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "platform",
+                                    "name",
+                                    "auth_type",
+                                    "credentials"
+                                ],
+                                "properties": {
+                                    "platform": {
+                                        "type": "string",
+                                        "example": "wordpress"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Main WordPress Site"
+                                    },
+                                    "auth_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "bearer_token",
+                                            "oauth2",
+                                            "jwt",
+                                            "openid"
+                                        ]
+                                    },
+                                    "credentials": {
+                                        "type": "object"
+                                    },
+                                    "config": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Integration created"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/integrations/{integration}": {
+            "get": {
+                "tags": [
+                    "Integrations"
+                ],
+                "summary": "Get a single integration",
+                "operationId": "e67c7da0cb42dd2d10183d9bad340e3d",
+                "parameters": [
+                    {
+                        "name": "integration",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Integration details"
+                    },
+                    "404": {
+                        "description": "Integration not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Integrations"
+                ],
+                "summary": "Update an integration",
+                "operationId": "d086cef33716f19ffc22dfab0b6359f9",
+                "parameters": [
+                    {
+                        "name": "integration",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "credentials": {
+                                        "type": "object"
+                                    },
+                                    "config": {
+                                        "type": "object"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive",
+                                            "error"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Integration updated"
+                    },
+                    "404": {
+                        "description": "Integration not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Integrations"
+                ],
+                "summary": "Delete an integration",
+                "operationId": "160ce37d67a65cb4dface382e28198d7",
+                "parameters": [
+                    {
+                        "name": "integration",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Integration deleted"
+                    },
+                    "404": {
+                        "description": "Integration not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/integrations/{integration}/test": {
+            "post": {
+                "tags": [
+                    "Integrations"
+                ],
+                "summary": "Test integration connection",
+                "operationId": "ca618e28c6efa5573399af06bd67de8c",
+                "parameters": [
+                    {
+                        "name": "integration",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Connection test result"
+                    },
+                    "404": {
+                        "description": "Integration not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/integrations/auth-fields/{authType}": {
+            "get": {
+                "tags": [
+                    "Integrations"
+                ],
+                "summary": "Get auth fields for a specific auth type",
+                "operationId": "45d8e0dfed3884848b95a86f4c7be91d",
+                "parameters": [
+                    {
+                        "name": "authType",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "bearer_token",
+                                "oauth2",
+                                "jwt",
+                                "openid"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Auth fields"
+                    },
+                    "400": {
+                        "description": "Invalid auth type"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/n8n/integrations/active": {
+            "get": {
+                "tags": [
+                    "N8N Integrations"
+                ],
+                "summary": "List active integrations for a firm",
+                "description": "Returns all active integrations for a specific firm. Requires API key authentication.",
+                "operationId": "listActiveIntegrations",
+                "parameters": [
+                    {
+                        "name": "X-API-Key",
+                        "in": "header",
+                        "description": "N8N API Key for authentication",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "N8N API Key for authentication (alternative to header)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "firm_id",
+                        "in": "query",
+                        "description": "The ID of the firm to retrieve integrations for",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with list of active integrations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "firm_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "integrations": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "platform": {
+                                                        "type": "string",
+                                                        "example": "google_gbp"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Google Business Profile"
+                                                    },
+                                                    "display_name": {
+                                                        "type": "string",
+                                                        "example": "Google Business Profile"
+                                                    },
+                                                    "auth_type": {
+                                                        "type": "string",
+                                                        "example": "oauth2"
+                                                    },
+                                                    "last_synced_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2025-11-30T12:00:00+00:00",
+                                                        "nullable": true
+                                                    },
+                                                    "last_sync_status": {
+                                                        "type": "string",
+                                                        "example": "success",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "count": {
+                                            "type": "integer",
+                                            "example": 3
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - firm_id is required",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "firm_id is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
         "/onboarding": {
             "get": {
                 "tags": [
@@ -455,6 +882,16 @@
             }
         }
     },
+    "components": {
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "description": "N8N API Key for authentication",
+                "name": "X-API-Key",
+                "in": "header"
+            }
+        }
+    },
     "tags": [
         {
             "name": "AI Agents",
@@ -463,6 +900,14 @@
         {
             "name": "Crawler",
             "description": "Crawler"
+        },
+        {
+            "name": "Integrations",
+            "description": "Integrations"
+        },
+        {
+            "name": "N8N Integrations",
+            "description": "N8N Integrations"
         },
         {
             "name": "Onboarding",

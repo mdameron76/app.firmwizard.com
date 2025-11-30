@@ -1,11 +1,5 @@
 (function () {
   "use strict";
-  
-  // Force double menu to start closed
-  if (localStorage.getItem("vyzorverticalstyles") === "doublemenu") {
-    document.querySelector("html").setAttribute("data-toggled", "double-menu-close");
-  }
-  
   if (localStorage.getItem("vyzordarktheme")) {
     document.querySelector("html").setAttribute("data-theme-mode", "dark");
     document.querySelector("html").setAttribute("data-menu-styles", "transparent");
@@ -103,7 +97,6 @@
       }
       if (verticalStyles == "doublemenu") {
         html.setAttribute("data-vertical-style", "doublemenu");
-        html.setAttribute("data-toggled", "double-menu-close");
         localStorage.removeItem("vyzornavstyles");
         setTimeout(() => {
           const menuSlideItem = document.querySelectorAll(
