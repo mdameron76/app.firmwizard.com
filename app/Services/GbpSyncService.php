@@ -97,6 +97,9 @@ class GbpSyncService
      */
     public function getPlaceIdFromGbpLocation(Integration $integration, string $locationId): string
     {
+        // Refresh token if needed
+        $this->refreshTokenIfNeeded($integration);
+
         $http = Http::withToken($integration->access_token);
 
         // Disable SSL verification for local development
