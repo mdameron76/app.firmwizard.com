@@ -27,27 +27,13 @@ class GbpLocationController extends Controller
      *     description="Converts GBP location_id to place_id and syncs full business data from Google Places API",
      *     operationId="syncGbpLocation",
      *     tags={"GBP Locations"},
-     *     security={{"ApiKeyAuth": {}}},
+     *     security={{"sanctum": {}}},
      *     @OA\Parameter(
      *         name="locationId",
      *         in="path",
      *         description="GBP location ID (numeric string)",
      *         required=true,
      *         @OA\Schema(type="string", example="9393481967568809184")
-     *     ),
-     *     @OA\Parameter(
-     *         name="X-API-Key",
-     *         in="header",
-     *         description="N8N API Key for authentication",
-     *         required=false,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="api_key",
-     *         in="query",
-     *         description="N8N API Key for authentication (alternative to header)",
-     *         required=false,
-     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         name="firm_id",
@@ -106,12 +92,6 @@ class GbpLocationController extends Controller
      */
     public function sync(Request $request, string $locationId): JsonResponse
     {
-        // Validate API key
-        $apiKey = $request->header('X-API-Key') ?? $request->query('api_key');
-        if (!$apiKey || $apiKey !== config('app.n8n_api_key')) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
         // Validate firm_id
         $firmId = $request->query('firm_id');
         if (!$firmId) {
