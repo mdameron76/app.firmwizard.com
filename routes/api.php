@@ -88,14 +88,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('ai-agents', [AiAgentController::class, 'index']);
     Route::post('ai-agents/trigger/{agentType}', [AiAgentController::class, 'trigger']);
     Route::get('ai-agents/jobs/{job}', [AiAgentController::class, 'show']);
+
+    // N8N Webhook routes (requires Bearer token)
+    Route::post('n8n/firms/{firm}/profile', [N8nWebhookController::class, 'storeProfile']);
+    Route::patch('n8n/firms/{firm}/profile', [N8nWebhookController::class, 'updateProfile']);
+
+    // N8N Integrations API (requires Bearer token)
+    Route::get('n8n/integrations/active', [IntegrationsController::class, 'listActive']);
+
+    // GBP Location Sync API (requires Bearer token)
+    Route::get('gbp/{locationId}/sync', [GbpLocationController::class, 'sync']);
 });
-
-// N8N Webhook routes (no auth - will use API key validation)
-Route::post('n8n/firms/{firm}/profile', [N8nWebhookController::class, 'storeProfile']);
-Route::patch('n8n/firms/{firm}/profile', [N8nWebhookController::class, 'updateProfile']);
-
-// N8N Integrations API (no auth - uses API key validation)
-Route::get('n8n/integrations/active', [IntegrationsController::class, 'listActive']);
-
-// GBP Location Sync API (no auth - uses API key validation)
-Route::get('gbp/{locationId}/sync', [GbpLocationController::class, 'sync']);
