@@ -68,7 +68,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('firms/{firm}/ai-jobs/{aiJob}', [AiJobController::class, 'show']);
     Route::patch('firms/{firm}/ai-jobs/{aiJob}', [AiJobController::class, 'update']);
     Route::delete('firms/{firm}/ai-jobs/{aiJob}', [AiJobController::class, 'destroy']);
-
+    
+    // Python Crawler API
+    Route::post('crawler/page', [CrawlerController::class, 'crawlPage']);
+    Route::get('crawler/pages/{competitorId}', [CrawlerController::class, 'getPages']);
+    Route::get('crawler/scripts', [CrawlerController::class, 'listScripts']);
+    
+    // Competitor Finder
+    Route::post('crawler/find-competitors', [CrawlerController::class, 'findCompetitors']);
+    Route::get('crawler/collections', [CrawlerController::class, 'getCollections']);
+    Route::post('crawler/collections', [CrawlerController::class, 'createCollection']);
+    
+    // Firms and Locations for Crawler
+    Route::get('crawler/firms', [CrawlerController::class, 'getFirms']);
+    Route::get('crawler/firm-locations', [CrawlerController::class, 'getFirmLocations']);
+    Route::get('crawler/firm-profiles', [CrawlerController::class, 'getFirmProfiles']);
+    
     // AI Agents
     Route::get('ai-agents', [AiAgentController::class, 'index']);
     Route::post('ai-agents/trigger/{agentType}', [AiAgentController::class, 'trigger']);
@@ -84,18 +99,3 @@ Route::get('n8n/integrations/active', [IntegrationsController::class, 'listActiv
 
 // GBP Location Sync API (no auth - uses API key validation)
 Route::get('gbp/{locationId}/sync', [GbpLocationController::class, 'sync']);
-
-// Python Crawler API (no auth - uses API key validation)
-Route::post('crawler/page', [CrawlerController::class, 'crawlPage']);
-Route::get('crawler/pages/{competitorId}', [CrawlerController::class, 'getPages']);
-Route::get('crawler/scripts', [CrawlerController::class, 'listScripts']);
-
-// Competitor Finder API (no auth - uses API key validation)
-Route::post('crawler/find-competitors', [CrawlerController::class, 'findCompetitors']);
-Route::get('crawler/collections', [CrawlerController::class, 'getCollections']);
-Route::post('crawler/collections', [CrawlerController::class, 'createCollection']);
-
-// Firms and Locations for Crawler (no auth - uses API key validation)
-Route::get('crawler/firms', [CrawlerController::class, 'getFirms']);
-Route::get('crawler/firm-locations', [CrawlerController::class, 'getFirmLocations']);
-Route::get('crawler/firm-profiles', [CrawlerController::class, 'getFirmProfiles']);
